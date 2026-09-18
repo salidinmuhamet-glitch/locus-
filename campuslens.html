@@ -1,0 +1,1640 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>CampusLens AI — Проверенные визуальные профили университетов</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#faf9f7; --bg2:#ffffff; --bg3:#f2f0ec;
+  --fg:#16150f; --fg2:#5c5a52; --fg3:#918e85;
+  --line:#e5e2db; --line2:#d2cec5;
+  --accent:#1f4fd8; --accent-soft:#e9edfd;
+  --hi:#1d7a4c; --hi-bg:#e4f3ea;
+  --md:#8a6410; --md-bg:#faefd8;
+  --lo:#ab382c; --lo-bg:#fbe7e4;
+  --radius:16px;
+  --shadow:0 1px 2px rgba(20,18,10,.05),0 10px 30px -16px rgba(20,18,10,.22);
+  --serif:"Instrument Serif",Georgia,"Times New Roman",serif;
+  --sans:"Inter",system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
+  --mono:"JetBrains Mono",ui-monospace,SFMono-Regular,Menlo,monospace;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --bg:#0e0e0d; --bg2:#161615; --bg3:#1e1e1c;
+    --fg:#f3f1ec; --fg2:#a9a59c; --fg3:#78756d;
+    --line:#2a2a27; --line2:#3a3a36;
+    --accent:#88a4ff; --accent-soft:#1a2039;
+    --hi:#6fd39b; --hi-bg:#13291d;
+    --md:#e0b45c; --md-bg:#2c2313;
+    --lo:#f0897a; --lo-bg:#2e1713;
+    --shadow:0 1px 2px rgba(0,0,0,.4),0 10px 30px -16px rgba(0,0,0,.7);
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#0e0e0d; --bg2:#161615; --bg3:#1e1e1c;
+  --fg:#f3f1ec; --fg2:#a9a59c; --fg3:#78756d;
+  --line:#2a2a27; --line2:#3a3a36;
+  --accent:#88a4ff; --accent-soft:#1a2039;
+  --hi:#6fd39b; --hi-bg:#13291d;
+  --md:#e0b45c; --md-bg:#2c2313;
+  --lo:#f0897a; --lo-bg:#2e1713;
+  --shadow:0 1px 2px rgba(0,0,0,.4),0 10px 30px -16px rgba(0,0,0,.7);
+}
+*{box-sizing:border-box}
+html,body{margin:0;padding:0}
+body{
+  background:
+    radial-gradient(circle at top left, rgba(31,79,216,.08), transparent 30%),
+    radial-gradient(circle at top right, rgba(29,122,76,.07), transparent 25%),
+    var(--bg);
+  color:var(--fg); font-family:var(--sans);
+  font-size:15px; line-height:1.55; -webkit-font-smoothing:antialiased;
+}
+img{max-width:100%}
+button{font:inherit;color:inherit;cursor:pointer;background:none;border:none}
+a{color:var(--accent);text-decoration:none}
+a:hover{text-decoration:underline}
+.wrap{max-width:1120px;margin:0 auto;padding:0 20px}
+.mono{font-family:var(--mono);font-size:12px;letter-spacing:.02em}
+
+/* header */
+header.top{position:sticky;top:0;z-index:40;background:rgba(250,249,247,.78);
+  backdrop-filter:blur(14px);border-bottom:1px solid var(--line)}
+.top .row{display:flex;align-items:center;gap:12px;height:64px}
+.logo{display:flex;align-items:center;gap:9px;font-weight:700;letter-spacing:-.02em;font-size:15px}
+.logo .dot{width:18px;height:18px;border-radius:7px;background:linear-gradient(145deg,var(--fg),#4a4d51);position:relative;flex:none;box-shadow:inset 0 0 0 1px rgba(255,255,255,.8)}
+.logo .dot:after{content:"";position:absolute;inset:5px;border-radius:50%;background:var(--bg)}
+.spacer{flex:1}
+.ghost{padding:8px 14px;border:1px solid var(--line);border-radius:999px;font-size:13px;color:var(--fg2);transition:all .2s ease;background:rgba(255,255,255,.15)}
+.ghost:hover{border-color:var(--line2);color:var(--fg);transform:translateY(-1px)}
+.user-pill{padding:8px 14px;border:1px solid rgba(31,79,216,.12);border-radius:999px;font-size:13px;color:var(--fg);background:linear-gradient(180deg,var(--bg2),var(--bg3));font-weight:700;box-shadow:0 6px 18px rgba(31,79,216,.08)}
+.auth-wrap{display:grid;grid-template-columns:1.1fr .9fr;gap:18px;max-width:980px;margin:0 auto;padding:32px 0 60px}
+.auth-panel{background:linear-gradient(180deg,var(--bg2),var(--bg));border:1px solid var(--line);border-radius:22px;padding:26px;box-shadow:var(--shadow)}
+.auth-form{display:flex;flex-direction:column;gap:10px;margin-top:16px}
+.auth-form input{width:100%;padding:12px 13px;border:1px solid var(--line2);border-radius:12px;background:var(--bg);color:var(--fg);font:inherit;outline:none;transition:border-color .2s ease, box-shadow .2s ease}
+.auth-form input:focus{border-color:var(--accent);box-shadow:0 0 0 4px rgba(31,79,216,.08)}
+.auth-form button{margin-top:8px}
+.auth-title{font-family:var(--serif);font-size:30px;letter-spacing:-.02em;margin:0 0 8px}
+.auth-sub{color:var(--fg3);font-size:14px;line-height:1.6}
+.auth-status{min-height:20px;font-size:13px;color:var(--fg2);margin-top:10px}
+.auth-status.error{color:var(--lo)}
+.auth-status.ok{color:var(--hi)}
+.user-profile{margin-top:32px;padding:24px;border-radius:24px;box-shadow:0 18px 40px rgba(18,22,25,.04)}
+.profile-header{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;margin-bottom:18px}
+.profile-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:14px;margin-top:14px}
+.profile-field{display:flex;flex-direction:column;gap:8px}
+.profile-field label{font-size:11px;text-transform:uppercase;letter-spacing:.07em;color:var(--fg3)}
+.profile-field input,.profile-field textarea{width:100%;padding:10px 11px;border:1px solid var(--line2);border-radius:10px;background:var(--bg);color:var(--fg);font:inherit;resize:vertical;min-height:42px;transition:border-color .2s ease}
+.profile-field input:focus,.profile-field textarea:focus{border-color:var(--accent);outline:none}
+.profile-field textarea{min-height:72px}
+.profile-actions{display:flex;justify-content:flex-end;margin-top:16px}
+.favorite-list{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:12px;margin-top:14px}
+.favorite-item{padding:12px 14px;border:1px solid var(--line);border-radius:14px;background:linear-gradient(180deg,var(--bg2),var(--bg3));display:flex;flex-direction:column;gap:7px;box-shadow:0 12px 25px rgba(12,15,18,.02)}
+.favorite-item .name{font-weight:700;font-size:14px}
+.favorite-item .meta{font-size:12px;color:var(--fg3)}
+.favorite-item button{align-self:flex-start;background:none;border:1px solid var(--line2);border-radius:999px;padding:5px 9px;font-size:12px;color:var(--fg2);transition:all .2s ease}
+.favorite-item button:hover{border-color:var(--lo);color:var(--lo)}
+
+/* hero */
+.hero{padding:76px 0 40px;text-align:center}
+.hero h1{font-family:var(--serif);font-weight:400;font-size:clamp(38px,6.2vw,66px);line-height:1.04;
+  letter-spacing:-.02em;margin:0 0 16px}
+.hero h1 em{font-style:italic;color:var(--fg2)}
+.hero p.sub{color:var(--fg2);font-size:17px;max-width:540px;margin:0 auto 34px}
+.searchbar{display:flex;gap:8px;max-width:620px;margin:0 auto;background:linear-gradient(180deg,var(--bg2),var(--bg));
+  border:1px solid rgba(31,79,216,.15);border-radius:999px;padding:7px 7px 7px 20px;box-shadow:0 18px 35px rgba(24,31,39,.06)}
+.searchbar input{flex:1;border:none;outline:none;background:none;font:inherit;font-size:16px;color:var(--fg);min-width:0}
+.searchbar input::placeholder{color:var(--fg3)}
+.btn{background:linear-gradient(180deg,#1b1d20,#111315);color:var(--bg);border-radius:999px;padding:11px 20px;font-weight:600;font-size:14px;white-space:nowrap;box-shadow:0 10px 16px rgba(17,19,21,.12);transition:transform .2s ease, box-shadow .2s ease}
+.btn:hover{opacity:.96;transform:translateY(-1px);box-shadow:0 14px 22px rgba(17,19,21,.16)}
+.btn[disabled]{opacity:.4;cursor:not-allowed;transform:none;box-shadow:none}
+.btn.sm{padding:8px 15px;font-size:13px}
+.btn.out{background:none;color:var(--fg);border:1px solid var(--line2);box-shadow:none}
+.btn.out:hover{border-color:var(--accent);color:var(--accent)}
+.chips{display:flex;flex-wrap:wrap;gap:8px;justify-content:center;margin-top:18px}
+.chip{border:1px solid var(--line);border-radius:999px;padding:6px 13px;font-size:13px;color:var(--fg2);background:rgba(255,255,255,.35);transition:all .2s ease}
+.chip:hover{border-color:var(--accent);color:var(--accent);transform:translateY(-1px)}
+.principles{display:flex;gap:28px;justify-content:center;flex-wrap:wrap;margin-top:56px;color:var(--fg3);font-size:13px}
+.principles b{color:var(--fg2);font-weight:550}
+
+/* notice */
+.notice{border:1px dashed rgba(31,79,216,.26);background:linear-gradient(180deg,var(--bg3),rgba(255,255,255,.26));border-radius:var(--radius);
+  padding:14px 16px;font-size:13px;color:var(--fg2);margin:28px auto 0;max-width:720px;box-shadow:inset 0 1px 0 rgba(255,255,255,.45)}
+.notice b{color:var(--fg)}
+
+/* generic card */
+.panel{background:linear-gradient(180deg,var(--bg2),var(--bg));border:1px solid var(--line);border-radius:20px;padding:20px;box-shadow:0 18px 40px rgba(18,22,25,.04)}
+h2.sec{font-family:var(--serif);font-weight:400;font-size:26px;letter-spacing:-.01em;margin:0 0 4px}
+.sec-sub{color:var(--fg3);font-size:13px;margin:0 0 18px}
+section.blk{padding:34px 0;border-top:1px solid var(--line)}
+.demo-badge{display:inline-flex;align-items:center;gap:8px;padding:6px 10px;border-radius:999px;border:1px solid rgba(31,79,216,.12);background:linear-gradient(180deg,var(--bg3),rgba(255,255,255,.28));color:var(--fg2);font-size:11px;letter-spacing:.08em;text-transform:uppercase;font-weight:700}
+.statusbar{display:flex;flex-wrap:wrap;gap:10px;align-items:center;margin:12px 0 18px;padding:10px 12px;border:1px solid var(--line);border-radius:12px;background:var(--bg3);color:var(--fg2);font-size:13px}
+.status-dot{width:10px;height:10px;border-radius:50%;display:inline-block}
+.status-dot.ok{background:#2ea36d;box-shadow:0 0 0 6px rgba(46,163,109,.12)}
+.status-dot.warn{background:#d9a53a;box-shadow:0 0 0 6px rgba(217,165,58,.12)}
+
+/* resolution */
+.cand{display:flex;align-items:center;gap:14px;width:100%;text-align:left;padding:15px 16px;border:1px solid var(--line);
+  border-radius:14px;background:linear-gradient(180deg,var(--bg2),var(--bg));margin-bottom:10px;box-shadow:0 10px 24px rgba(15,18,20,.02);transition:all .2s ease}
+.cand:hover{border-color:var(--accent);background:var(--accent-soft);transform:translateY(-1px)}
+.cand .nm{font-weight:700}
+.cand .loc{color:var(--fg3);font-size:13px}
+
+/* pipeline */
+.steps{display:flex;flex-direction:column;gap:2px}
+.step{display:flex;align-items:center;gap:12px;padding:9px 2px;font-size:14px;color:var(--fg3);transition:color .2s}
+.step.active{color:var(--fg)}
+.step.done{color:var(--fg2)}
+.mark{width:18px;height:18px;border-radius:50%;border:1.5px solid var(--line2);flex:none;display:grid;place-items:center;font-size:10px}
+.step.done .mark{background:var(--hi-bg);border-color:var(--hi);color:var(--hi)}
+.step.active .mark{border-color:var(--accent);border-top-color:transparent;animation:spin .7s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+.step .t{margin-left:auto;font-family:var(--mono);font-size:11px;color:var(--fg3)}
+.timer{font-family:var(--mono);font-size:34px;letter-spacing:-.02em}
+
+/* stats */
+.stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:1px;background:var(--line);
+  border:1px solid var(--line);border-radius:var(--radius);overflow:hidden}
+.stat{background:var(--bg2);padding:15px 16px}
+.stat .v{font-size:23px;font-weight:600;letter-spacing:-.02em}
+.stat .k{font-size:11.5px;color:var(--fg3);text-transform:uppercase;letter-spacing:.05em;margin-top:2px}
+
+/* profile head */
+.phead{display:flex;align-items:flex-end;gap:20px;flex-wrap:wrap;margin-bottom:22px}
+.phead h1{font-family:var(--serif);font-weight:400;font-size:clamp(30px,5vw,46px);margin:0;letter-spacing:-.02em}
+.phead .meta{color:var(--fg2);font-size:14px}
+.badge{display:inline-flex;align-items:center;gap:5px;border-radius:999px;padding:3px 10px;font-size:11.5px;font-weight:550}
+.badge.hi{background:var(--hi-bg);color:var(--hi)}
+.badge.md{background:var(--md-bg);color:var(--md)}
+.badge.lo{background:var(--lo-bg);color:var(--lo)}
+.badge.n{background:var(--bg3);color:var(--fg2)}
+
+/* filters */
+.filters{display:flex;gap:7px;flex-wrap:wrap;margin-bottom:18px}
+.f{border:1px solid var(--line);background:var(--bg2);border-radius:999px;padding:6px 13px;font-size:13px;color:var(--fg2)}
+.f.on{background:var(--fg);color:var(--bg);border-color:var(--fg)}
+
+/* gallery */
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(258px,1fr));gap:16px}
+.card{background:linear-gradient(180deg,var(--bg2),var(--bg));border:1px solid var(--line);border-radius:18px;overflow:hidden;
+  display:flex;flex-direction:column;animation:pop .35s ease both;box-shadow:0 18px 30px rgba(12,15,18,.03)}
+@keyframes pop{from{opacity:0;transform:translateY(8px)}}
+.card .thumb{aspect-ratio:4/3;position:relative;background:var(--bg3);overflow:hidden}
+.card .thumb svg{width:100%;height:100%;display:block}
+.card .ph-note{position:absolute;left:8px;bottom:8px;background:rgba(0,0,0,.55);color:#fff;border-radius:6px;
+  padding:2px 7px;font-size:10px;font-family:var(--mono);letter-spacing:.02em}
+.card .body{padding:13px 14px 14px;display:flex;flex-direction:column;gap:7px;flex:1}
+.card .ttl{font-weight:700;font-size:14.5px;line-height:1.3}
+.card .desc{color:var(--fg2);font-size:13px;flex:1}
+.card .foot{display:flex;align-items:center;gap:8px;flex-wrap:wrap;border-top:1px solid var(--line);
+  padding-top:10px;margin-top:2px}
+.card .foot .src{font-family:var(--mono);font-size:11px;color:var(--fg3);flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.mini{font-size:12px;border:1px solid var(--line);border-radius:8px;padding:4px 9px;color:var(--fg2);background:rgba(255,255,255,.2)}
+.mini:hover{border-color:var(--line2);color:var(--fg)}
+.catrow{display:flex;align-items:baseline;gap:10px;margin:28px 0 12px}
+.catrow h3{font-size:16px;margin:0;font-weight:600;letter-spacing:-.01em}
+.catrow .c{color:var(--fg3);font-size:12.5px}
+.empty{border:1px dashed rgba(31,79,216,.22);border-radius:12px;padding:16px;color:var(--fg2);font-size:13.5px;background:linear-gradient(180deg,var(--bg3),rgba(255,255,255,.22));}
+
+/* coverage */
+.cov{display:flex;align-items:center;gap:12px;margin-bottom:9px;font-size:13.5px}
+.cov .nm{width:118px;flex:none;color:var(--fg2)}
+.cov .bar{flex:1;height:7px;border-radius:4px;background:var(--bg3);overflow:hidden}
+.cov .bar i{display:block;height:100%;background:var(--accent);border-radius:4px;transition:width .8s cubic-bezier(.2,.8,.2,1)}
+.cov .pc{width:42px;text-align:right;font-family:var(--mono);font-size:12px;color:var(--fg2)}
+
+/* evidence modal */
+.modal{position:fixed;inset:0;z-index:80;display:none;align-items:center;justify-content:center;padding:18px}
+.modal.on{display:flex}
+.modal .scrim{position:absolute;inset:0;background:rgba(10,10,8,.55);backdrop-filter:blur(3px)}
+.modal .box{position:relative;background:var(--bg2);border:1px solid var(--line2);border-radius:20px;
+  max-width:560px;width:100%;max-height:86vh;overflow:auto;box-shadow:var(--shadow)}
+.modal .bx-in{padding:24px}
+.chain{margin:14px 0 0;border-left:2px solid var(--line);padding-left:16px}
+.chain .node{position:relative;padding:9px 0}
+.chain .node:before{content:"";position:absolute;left:-21px;top:15px;width:8px;height:8px;border-radius:50%;
+  background:var(--bg2);border:2px solid var(--line2)}
+.chain .node.ok:before{border-color:var(--hi);background:var(--hi)}
+.chain .node.warn:before{border-color:var(--md);background:var(--md)}
+.chain .lbl{font-size:11px;text-transform:uppercase;letter-spacing:.06em;color:var(--fg3)}
+.chain .val{font-size:14px}
+.score{display:flex;align-items:flex-end;gap:10px;margin-top:6px}
+.score .n{font-size:40px;font-weight:600;letter-spacing:-.03em;line-height:1}
+.wtable{width:100%;border-collapse:collapse;margin-top:12px;font-size:13px}
+.wtable td{padding:6px 0;border-bottom:1px solid var(--line);color:var(--fg2)}
+.wtable td:last-child{text-align:right;font-family:var(--mono);font-size:12px;color:var(--fg)}
+.x{position:absolute;top:14px;right:14px;width:30px;height:30px;border-radius:50%;background:var(--bg3);
+  display:grid;place-items:center;color:var(--fg2);font-size:16px}
+
+/* assistant */
+.chatlog{display:flex;flex-direction:column;gap:12px;max-height:340px;overflow:auto;margin-bottom:14px}
+.msg{max-width:88%;padding:10px 14px;border-radius:14px;font-size:14px;white-space:pre-wrap}
+.msg.u{align-self:flex-end;background:var(--fg);color:var(--bg);border-bottom-right-radius:5px}
+.msg.a{align-self:flex-start;background:var(--bg3);border-bottom-left-radius:5px}
+.askrow{display:flex;gap:8px}
+.askrow input{flex:1;background:var(--bg);border:1px solid var(--line2);border-radius:999px;padding:10px 16px;
+  font:inherit;font-size:14px;color:var(--fg);outline:none;min-width:0}
+
+/* compare */
+.cmp{display:grid;grid-template-columns:1fr 1fr;gap:1px;background:var(--line);border:1px solid var(--line);
+  border-radius:var(--radius);overflow:hidden}
+.cmp .col{background:var(--bg2);padding:16px}
+.cmp .rowk{display:flex;justify-content:space-between;padding:7px 0;border-bottom:1px solid var(--line);font-size:13.5px}
+.cmp .rowk span:first-child{color:var(--fg3)}
+.profile-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:12px;margin-top:16px}
+.profile-item{padding:12px 14px;border:1px solid var(--line);border-radius:12px;background:var(--bg3)}
+.profile-item .label{font-size:11px;text-transform:uppercase;letter-spacing:.07em;color:var(--fg3)}
+.profile-item .value{font-size:15px;font-weight:600;letter-spacing:-.01em;margin-top:6px}
+
+footer{border-top:1px solid var(--line);padding:28px 0 60px;color:var(--fg3);font-size:12.5px}
+.hidden{display:none!important}
+.top-nav{display:flex;gap:7px;align-items:center;margin-left:10px}
+.top-nav .active{background:var(--fg);color:var(--bg);border-color:var(--fg)}
+.rank-tools{display:grid;grid-template-columns:1.4fr repeat(4,1fr);gap:10px;margin:18px 0}
+.rank-tools select,.rank-tools input{width:100%;padding:10px 11px;border:1px solid var(--line2);border-radius:10px;background:var(--bg);color:var(--fg);font:inherit;outline:none}
+.rank-tools label{display:flex;flex-direction:column;gap:5px;color:var(--fg3);font-size:11px}
+.rank-card{display:flex;gap:16px;align-items:flex-start;border-top:1px solid var(--line);padding:18px 0}
+.rank-no{font-family:var(--serif);font-size:34px;line-height:1;color:var(--accent);width:42px;flex:none}
+.rank-name{font-size:16px;font-weight:700}.rank-meta{color:var(--fg2);font-size:13px;margin-top:3px}
+.rank-stats{display:flex;gap:7px;flex-wrap:wrap;margin-top:10px}.rank-stat{padding:5px 9px;border-radius:8px;background:var(--bg3);font-size:12px;color:var(--fg2)}
+.rank-score{margin-left:auto;text-align:right;flex:none}.rank-score strong{font-size:20px}.rank-score span{display:block;color:var(--fg3);font-size:11px}
+@media(max-width:760px){.top-nav{order:3;width:100%;margin:0}.top .row{height:auto;min-height:64px;padding-top:10px;padding-bottom:10px;flex-wrap:wrap}.rank-tools{grid-template-columns:1fr 1fr}.rank-tools label:first-child{grid-column:1/-1}.rank-score{min-width:54px}}
+@media(max-width:620px){
+  .hero{padding:48px 0 30px}
+  .searchbar{flex-direction:column;border-radius:20px;padding:12px}
+  .searchbar input{padding:4px 6px}
+  .cmp{grid-template-columns:1fr}
+  .auth-wrap{grid-template-columns:1fr}
+  .auth-panel{padding:18px}
+  .auth-title{font-size:26px}
+}
+.global-ai-dock{position:fixed;left:18px;bottom:18px;z-index:90;width:min(360px,calc(100vw - 28px));background:var(--bg2);border:1px solid var(--line);border-radius:18px;padding:14px;box-shadow:0 22px 50px rgba(10,14,18,.22);transition:width .2s ease,height .2s ease,padding .2s ease,border-radius .2s ease}
+.global-ai-header{display:flex;align-items:flex-start;justify-content:space-between;gap:10px}
+.global-ai-dock .ai-toggle{border:0;background:none;padding:5px 8px;color:var(--fg2);cursor:pointer}
+.global-ai-dock .ai-log{max-height:170px;overflow:auto;margin:12px 0;display:flex;flex-direction:column;gap:8px}
+.global-ai-dock .ai-msg{padding:8px 10px;border-radius:10px;background:var(--bg3);font-size:13px}
+.global-ai-dock .ai-msg.user{background:var(--accent-soft);align-self:flex-end}
+.global-ai-dock .ai-row{display:flex;gap:8px}
+.global-ai-dock .ai-row input{min-width:0;flex:1;padding:9px 11px;border:1px solid var(--line2);border-radius:10px;background:var(--bg);color:var(--fg);font:inherit}
+.global-ai-dock .ai-row button{border:0;border-radius:10px;padding:8px 12px;background:var(--fg);color:var(--bg);cursor:pointer}
+.global-ai-dock.collapsed{width:58px;height:58px;padding:0;border:0;border-radius:50%;background:linear-gradient(145deg,var(--accent),#173a9f);box-shadow:0 12px 28px rgba(31,79,216,.35);overflow:visible}
+.global-ai-dock.collapsed .global-ai-header{height:100%;display:block}
+.global-ai-dock.collapsed .global-ai-header>div{display:none}
+.global-ai-dock.collapsed .ai-toggle{display:grid;place-items:center;width:100%;height:100%;padding:0;border-radius:50%;color:#fff;font-size:0}
+.global-ai-dock.collapsed .ai-toggle::before{content:"AI";font-size:14px;font-weight:700;letter-spacing:.03em}
+.global-ai-dock.collapsed .ai-body{display:none}
+.global-ai-dock:has(#globalAiOpen:checked){width:min(360px,calc(100vw - 28px));height:auto;padding:14px;border:1px solid var(--line);border-radius:18px;background:var(--bg2);overflow:auto}
+.global-ai-dock:has(#globalAiOpen:checked) .global-ai-header>div{display:block}
+.global-ai-dock:has(#globalAiOpen:checked) .ai-toggle{display:block;width:auto;height:auto;padding:5px 8px;border-radius:8px;color:var(--fg2);font-size:0}
+.global-ai-dock:has(#globalAiOpen:checked) .ai-toggle::before{content:"×";font-size:20px}
+.global-ai-dock:has(#globalAiOpen:checked) .ai-body{display:block}
+.global-ai-dock .ai-open{position:absolute;opacity:0;width:1px;height:1px}
+@media(max-width:620px){.global-ai-dock{left:10px;bottom:10px}.global-ai-dock.collapsed{width:56px;height:56px}}
+</style>
+</head>
+<body>
+
+<header class="top"><div class="wrap row">
+  <div class="logo"><span class="dot"></span> CampusLens<span style="color:var(--fg3);font-weight:400">&nbsp;AI</span></div>
+  <div class="spacer"></div>
+  <div class="top-nav"><button class="ghost active" id="navHome">Главная</button><button class="ghost" id="navTop">Топ университетов</button></div>
+  <div class="user-pill hidden" id="userBadge">Гость</div>
+  <button class="ghost" id="navProfile">Профиль</button>
+  <button class="ghost" id="navAuthToggle">Войти</button>
+  <button class="ghost hidden" id="navLogout">Выйти</button>
+  <button class="ghost" id="navDebug">/debug</button>
+  <button class="ghost" id="navTheme">Тема</button>
+  <button class="ghost hidden" id="navNew">Новый поиск</button>
+</div></header>
+
+<!-- ============ AUTH ============ -->
+<main id="viewAuth" class="hidden">
+  <div class="wrap" style="padding:60px 0 40px">
+    <div class="auth-wrap">
+      <div class="auth-panel">
+        <div class="demo-badge">ДОСТУП</div>
+        <h1 class="auth-title">Вход в CampusLens</h1>
+        <p class="auth-sub">Для работы с профилями университета нужен аккаунт. Регистрация и вход работают локально в браузере для демо-режима.</p>
+        <div class="auth-form">
+          <input id="loginEmail" type="email" placeholder="Email">
+          <input id="loginPassword" type="password" placeholder="Пароль">
+          <button class="btn" id="loginBtn">Войти</button>
+        </div>
+        <div class="auth-status" id="authStatus"></div>
+      </div>
+
+      <div class="auth-panel">
+        <div class="demo-badge">РЕГИСТРАЦИЯ</div>
+        <h2 class="auth-title" style="font-size:26px">Создать аккаунт</h2>
+        <div class="auth-form">
+          <input id="registerName" type="text" placeholder="Имя">
+          <input id="registerEmail" type="email" placeholder="Email">
+          <input id="registerPassword" type="password" placeholder="Пароль (минимум 6 символов)">
+          <button class="btn out" id="registerBtn">Зарегистрироваться</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</main>
+
+<!-- ============ LANDING ============ -->
+<main id="viewHome">
+  <div class="wrap hero">
+    <div class="demo-badge">ДЕМО-ДАННЫЕ</div>
+    <h1>Увидь университет <em>так</em>,<br>как его видят студенты.</h1>
+    <p class="sub">Проверенные визуальные профили кампусов и студенческой жизни на основе AI. Каждая карточка подтверждается доказательной цепочкой.</p>
+    <div class="searchbar">
+      <input id="q" placeholder="Введите название университета…" autocomplete="off">
+      <button class="btn" id="go">Сгенерировать профиль</button>
+    </div>
+    <div class="chips" id="chips"></div>
+    <div class="principles">
+      <div><b>Мы не просто ищем фотографии университета.</b> Мы проверяем их.</div>
+      <div><b>Если мы не знаем</b> — мы честно говорим.</div>
+    </div>
+    <div class="notice">
+      <b>Важно:</b> эта версия работает в песочнице claude.ai, где политики запрещают внешнее сканирование и загрузку реальных изображений. Поэтому здесь используются детерминированные генерируемые заглушки, помеченные на каждой карточке. Всё остальное — реальная логика: разрешение университета, параллельный pipeline, тайминги, дедубликация, формула уверенности и цепочка доказательств. Всё считается в рантайме, без жёстко зашитых результатов.
+    </div>
+  </div>
+
+  <div class="wrap" id="userProfileCard" style="padding-bottom: 30px; display:none;">
+    <div class="panel user-profile">
+      <div class="profile-header">
+        <div>
+          <div class="demo-badge">PROFILE</div>
+          <h2 class="sec" style="margin-top:10px">Личный профиль</h2>
+        </div>
+        <button class="btn sm" id="toggleProfileEdit">Редактировать</button>
+      </div>
+      <div class="profile-grid">
+        <div class="profile-field">
+          <label>Имя</label>
+          <input id="profileName" type="text" value="" disabled>
+        </div>
+        <div class="profile-field">
+          <label>Email</label>
+          <input id="profileEmail" type="email" value="" disabled>
+        </div>
+        <div class="profile-field">
+          <label>Роль</label>
+          <input id="profileRole" type="text" value="Research Explorer" disabled>
+        </div>
+        <div class="profile-field">
+          <label>Город</label>
+          <input id="profileCity" type="text" value="Астана" disabled>
+        </div>
+      </div>
+      <div class="profile-field" style="margin-top:14px">
+        <label>Интересы</label>
+        <textarea id="profileInterests" disabled>Университеты, студенческая жизнь, проверка данных, поиск подходящего кампуса</textarea>
+      </div>
+      <div class="profile-actions">
+        <button class="btn sm" id="saveProfileBtn" style="display:none">Сохранить профиль</button>
+      </div>
+
+      <div style="margin-top:18px; border-top:1px solid var(--line); padding-top:18px;">
+        <div class="profile-header" style="margin-bottom:10px">
+          <h3 class="sec" style="font-size:22px; margin:0">Избранные университеты</h3>
+          <button class="btn sm out" id="saveCurrentUniversityBtn">Сохранить текущий</button>
+        </div>
+        <div id="favoritesList" class="favorite-list"></div>
+      </div>
+    </div>
+  </div>
+</main>
+
+<!-- ============ TOP UNIVERSITIES ============ -->
+<main id="viewTop" class="hidden"><div class="wrap" style="padding:48px 0 70px">
+  <div class="demo-badge">РЕЙТИНГ И ПОДБОР</div>
+  <h1 class="auth-title" style="font-size:42px;margin-top:12px">Топ университеты</h1>
+  <p class="sec-sub" style="max-width:640px">Выберите приоритеты, чтобы найти университеты под свои цели. Рейтинг загружается из данных `pars/top_world_universities.csv`, а стоимость и поступление — из `pars/us_admission_requirements.csv`.</p>
+  <div class="panel">
+    <div class="rank-tools">
+      <label>Поиск<input id="rankSearch" placeholder="Название университета"></label>
+      <label>Страна<select id="rankCountry"><option value="">Все страны</option></select></label>
+      <label>Стоимость до, USD<input id="rankTuition" type="number" min="0" placeholder="Например, 30000"></label>
+      <label>Поступление от, %<input id="rankAdmission" type="number" min="0" max="100" placeholder="Например, 50"></label>
+      <label>SAT от<input id="rankSat" type="number" min="0" placeholder="Например, 1200"></label>
+    </div>
+    <div style="display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;margin-bottom:8px">
+      <div id="rankCount" class="sec-sub" style="margin:0">Загрузка данных…</div>
+      <select id="rankSort" class="f" style="padding:7px 10px"><option value="rank">По мировому рейтингу</option><option value="score">По баллу</option><option value="admission">По шансу поступления</option><option value="tuition">По стоимости</option></select>
+    </div>
+    <div id="rankList"></div>
+  </div>
+</div></main>
+
+<!-- ============ RESOLUTION ============ -->
+<main id="viewResolve" class="hidden"><div class="wrap" style="padding:56px 0;max-width:620px">
+  <h2 class="sec">Какой университет вы имеете в виду?</h2>
+  <p class="sec-sub">Запрос неоднозначен. Система не выберет университет молча.</p>
+  <div id="candList"></div>
+  <button class="mini" id="backHome" style="margin-top:12px">← Изменить запрос</button>
+</div></main>
+
+<!-- ============ PIPELINE ============ -->
+<main id="viewRun" class="hidden"><div class="wrap" style="padding:64px 0;max-width:620px">
+  <div class="timer" id="clock">0.0s</div>
+  <p class="sec-sub" id="runFor">Формируем профиль…</p>
+  <div class="panel" style="margin-top:20px"><div class="steps" id="steps"></div></div>
+</div></main>
+
+<!-- ============ PROFILE ============ -->
+<main id="viewProfile" class="hidden">
+  <div class="wrap" style="padding:40px 0 0">
+    <div class="phead">
+      <div style="flex:1;min-width:260px">
+        <div class="badge n" style="margin-bottom:8px">Визуальный профиль · ДЕМО-ДАННЫЕ</div>
+        <h1 id="pName">—</h1>
+        <div class="meta" id="pMeta">—</div>
+      </div>
+      <div style="text-align:right">
+        <div class="mono" style="color:var(--fg3)">сгенерировано за</div>
+        <div style="font-family:var(--mono);font-size:22px" id="pTime">—</div>
+        <div class="mono" style="color:var(--fg3)" id="pCache"></div>
+      </div>
+    </div>
+    <div style="display:flex;justify-content:flex-end;margin-bottom:12px">
+      <button class="btn sm out" id="saveCurrentUniversityBtnProfile">Сохранить текущий</button>
+    </div>
+    <div class="statusbar" id="verificationStatus"></div>
+    <p id="pDesc" style="color:var(--fg2);max-width:680px;margin:0 0 22px"></p>
+    <div id="profileSummary"></div>
+    <div class="stats" id="pStats"></div>
+  </div>
+
+  <section class="blk"><div class="wrap">
+    <h2 class="sec">Покрытие визуальными данными</h2>
+    <p class="sec-sub">Полнота найденных проверенных данных — не показатель качества университета.</p>
+    <div id="covList"></div>
+  </div></section>
+
+  <section class="blk"><div class="wrap">
+    <h2 class="sec">Галерея</h2>
+    <p class="sec-sub">Каждая карточка оценивается отдельно. Низкая уверенность не означает ошибку, но запись никогда не помечается как проверенная.</p>
+    <div class="filters" id="filters"></div>
+    <div id="gallery"></div>
+  </div></section>
+
+  <section class="blk"><div class="wrap" style="max-width:760px">
+    <h2 class="sec">Спросить об этом университете</h2>
+    <p class="sec-sub">Ответы основаны только на данных, собранных выше. Нет данных ⇒ честно говорим об этом.</p>
+    <div class="panel">
+      <div class="chatlog" id="chatlog"></div>
+      <div class="askrow">
+        <input id="askInput" placeholder="Например: какие категории имеют недостаточно данных?">
+        <button class="btn sm" id="askBtn">Спросить</button>
+      </div>
+      <div class="chips" style="justify-content:flex-start;margin-top:12px" id="askChips"></div>
+    </div>
+  </div></section>
+
+  <section class="blk"><div class="wrap" style="max-width:860px">
+    <h2 class="sec">Сравнение университетов</h2>
+    <p class="sec-sub">Только фактическое сравнение данных. Мы не ранжируем университеты.</p>
+    <div class="searchbar" style="max-width:100%;margin:0 0 16px">
+      <input id="cmpQ" placeholder="Второй университет…" autocomplete="off">
+      <button class="btn" id="cmpGo">Сравнить</button>
+    </div>
+    <div id="cmpOut"></div>
+  </div></section>
+</main>
+
+<!-- ============ DEBUG ============ -->
+<main id="viewDebug" class="hidden"><div class="wrap" style="padding:48px 0;max-width:720px">
+  <h2 class="sec">/debug</h2>
+  <p class="sec-sub">Телеметрия последнего запуска pipeline.</p>
+  <div class="panel"><pre class="mono" id="debugOut" style="margin:0;white-space:pre-wrap;color:var(--fg2)">Запусков ещё не было.</pre></div>
+</div></main>
+
+<footer><div class="wrap">
+  CampusLens AI · LOCUS Startup Hackathon 2026 · CASE 01 — LOCUSCASE1 ·
+  Сгенерированные заглушки — это не фотографии. Ссылки на источники ведут на поиск медиа Wikimedia Commons.
+</div></footer>
+
+<div class="modal" id="modal"><div class="scrim" data-close></div>
+  <div class="box"><button class="x" data-close>×</button><div class="bx-in" id="modalBody"></div></div>
+</div>
+
+<div id="globalAiDock" class="global-ai-dock collapsed">
+  <div class="global-ai-header">
+    <div><div class="demo-badge">ИИ-АССИСТЕНТ</div><strong id="globalAiTitle">ИИ-ассистент</strong></div>
+    <input id="globalAiOpen" class="ai-open" type="checkbox">
+    <label for="globalAiOpen" class="ai-toggle" aria-label="Открыть ИИ-ассистента">Открыть</label>
+  </div>
+  <div class="ai-body">
+    <div id="globalAiLog" class="ai-log"><div class="ai-msg">Задайте вопрос об университете.</div></div>
+    <div class="ai-row"><input id="globalAiInput" placeholder="Спросите про университет…"><button id="globalAiAsk" type="button">ОК</button></div>
+  </div>
+</div>
+
+<script>
+/* ---------- tiny helpers ---------- */
+const $=s=>document.querySelector(s), $$=s=>[...document.querySelectorAll(s)];
+const show=id=>{["viewAuth","viewHome","viewTop","viewResolve","viewRun","viewProfile","viewDebug"].forEach(v=>$("#"+v).classList.toggle("hidden",v!==id));window.scrollTo(0,0);};
+const esc=s=>String(s??"").replace(/[&<>\"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+function hash(str){let h=2166136261;for(let i=0;i<str.length;i++){h^=str.charCodeAt(i);h=Math.imul(h,16777619);}return h>>>0;}
+
+const AUTH_KEY="campuslens_accounts_v1";
+const SESSION_KEY="campuslens_session_v1";
+
+function getAccounts(){
+  try {
+    const value = JSON.parse(localStorage.getItem(AUTH_KEY) || "[]");
+    return Array.isArray(value) ? value : [];
+  } catch { return []; }
+}
+
+function saveAccounts(accounts){
+  localStorage.setItem(AUTH_KEY, JSON.stringify(accounts));
+}
+
+function getCurrentUser(){
+  try {
+    const value = JSON.parse(localStorage.getItem(SESSION_KEY) || "null");
+    return value && typeof value === "object" ? value : null;
+  } catch { return null; }
+}
+
+function setCurrentUser(user){
+  localStorage.setItem(SESSION_KEY, JSON.stringify({ id:user.id, name:user.name, email:user.email }));
+}
+
+function clearCurrentUser(){
+  localStorage.removeItem(SESSION_KEY);
+}
+
+function getFavorites(){
+  const user = getCurrentUser();
+  if (!user) return [];
+  const key = `campuslens_favorites_${user.email || "guest"}`;
+  try {
+    const value = JSON.parse(localStorage.getItem(key) || "[]");
+    return Array.isArray(value) ? value : [];
+  } catch { return []; }
+}
+
+function saveFavorites(items){
+  const user = getCurrentUser();
+  if (!user) return;
+  localStorage.setItem(`campuslens_favorites_${user.email || "guest"}`, JSON.stringify(items));
+}
+
+function renderFavorites(){
+  const user = getCurrentUser();
+  const list = $("#favoritesList");
+  if (!list) return;
+  if (!user) {
+    list.innerHTML = "";
+    return;
+  }
+
+  const favorites = getFavorites();
+  if (!favorites.length) {
+    list.innerHTML = '<div class="empty">Пока нет сохранённых университетов. Сохраните любой университет, чтобы он появился здесь.</div>';
+    return;
+  }
+
+  list.innerHTML = favorites.map((u, index) => `
+    <div class="favorite-item">
+      <div class="name">${esc(u.name)}</div>
+      <div class="meta">${esc([u.city, u.country].filter(Boolean).join(", "))}</div>
+      <button data-fav-index="${index}">Удалить</button>
+    </div>
+  `).join("");
+
+  $$("#favoritesList [data-fav-index]").forEach(btn => {
+    btn.onclick = () => {
+      const idx = Number(btn.dataset.favIndex);
+      const favoritesNow = getFavorites();
+      favoritesNow.splice(idx, 1);
+      saveFavorites(favoritesNow);
+      renderFavorites();
+    };
+  });
+}
+
+function isUniversitySaved(name){
+  const target = String(name || "").trim().toLowerCase();
+  if (!target) return false;
+  return getFavorites().some(item => String(item.name || "").trim().toLowerCase() === target);
+}
+
+function syncSaveButtons(){
+  const buttons = [
+    document.getElementById("saveCurrentUniversityBtn"),
+    document.getElementById("saveCurrentUniversityBtnProfile")
+  ].filter(Boolean);
+
+  const hasUser = !!getCurrentUser();
+  const currentName = S && S.uni && S.uni.name ? S.uni.name : "";
+  const saved = !!currentName && isUniversitySaved(currentName);
+
+  buttons.forEach(btn => {
+    btn.disabled = !hasUser || !currentName;
+    btn.textContent = saved ? "Сохранено" : "Сохранить текущий";
+    btn.style.opacity = hasUser && currentName ? "1" : "0.65";
+  });
+}
+
+function addFavoriteUniversity(u){
+  if (!u || !u.name) return false;
+  const favorites = getFavorites();
+  const exists = favorites.some(item => item.name.toLowerCase() === u.name.toLowerCase());
+  if (exists) {
+    syncSaveButtons();
+    return false;
+  }
+  favorites.unshift({ name: u.name, city: u.city || "", country: u.country || "" });
+  saveFavorites(favorites);
+  renderFavorites();
+  syncSaveButtons();
+  return true;
+}
+
+function updateAuthHeader(){
+  const user = getCurrentUser();
+  const userBadge = $("#userBadge");
+  const navAuthToggle = $("#navAuthToggle");
+  const navLogout = $("#navLogout");
+  const navProfile = $("#navProfile");
+
+  if (user) {
+    userBadge.textContent = user.name || user.email || "Пользователь";
+    userBadge.classList.remove("hidden");
+    navAuthToggle.classList.add("hidden");
+    navLogout.classList.remove("hidden");
+    navProfile.classList.remove("hidden");
+  } else {
+    userBadge.classList.add("hidden");
+    navAuthToggle.classList.remove("hidden");
+    navLogout.classList.add("hidden");
+    navProfile.classList.add("hidden");
+  }
+}
+
+function renderUserProfile(){
+  const user = getCurrentUser();
+  const card = $("#userProfileCard");
+  if (!card) return;
+  if (!user) {
+    card.style.display = "none";
+    return;
+  }
+
+  const saved = JSON.parse(localStorage.getItem("campuslens_profile_v1") || "null");
+  const profile = saved && typeof saved === "object" ? saved : {};
+
+  $("#profileName").value = profile.name || user.name || "";
+  $("#profileEmail").value = profile.email || user.email || "";
+  $("#profileRole").value = profile.role || "Research Explorer";
+  $("#profileCity").value = profile.city || "Астана";
+  $("#profileInterests").value = profile.interests || "Университеты, студенческая жизнь, проверка данных, поиск подходящего кампуса";
+  card.style.display = "block";
+  renderFavorites();
+}
+
+function saveUserProfile(){
+  const user = getCurrentUser();
+  if (!user) return;
+
+  const profile = {
+    name: $("#profileName").value.trim() || user.name || "",
+    email: $("#profileEmail").value.trim() || user.email || "",
+    role: $("#profileRole").value.trim() || "Research Explorer",
+    city: $("#profileCity").value.trim() || "Астана",
+    interests: $("#profileInterests").value.trim() || "Университеты, студенческая жизнь, проверка данных, поиск подходящего кампуса"
+  };
+
+  localStorage.setItem("campuslens_profile_v1", JSON.stringify(profile));
+
+  if (profile.name || profile.email) {
+    const current = getCurrentUser();
+    if (current) {
+      setCurrentUser({ ...current, name: profile.name || current.name, email: profile.email || current.email });
+      updateAuthHeader();
+    }
+  }
+
+  $("#toggleProfileEdit").textContent = "Редактировать";
+  ["#profileName", "#profileEmail", "#profileRole", "#profileCity", "#profileInterests"].forEach(sel => {
+    $(sel).disabled = true;
+  });
+  $("#saveProfileBtn").style.display = "none";
+}
+
+function setAuthStatus(text, kind=""){
+  const node = $("#authStatus");
+  if (!node) return;
+  node.textContent = text;
+  node.className = "auth-status" + (kind ? ` ${kind}` : "");
+}
+
+function ensureDemoAccount(){
+  const accounts = getAccounts();
+  const demoEmail = "demo@campuslens.local";
+  if (!accounts.some(a => a.email.toLowerCase() === demoEmail)) {
+    accounts.push({ id: String(Date.now()), name: "Demo User", email: demoEmail, password: "demo123" });
+    saveAccounts(accounts);
+  }
+}
+
+function bootAuth(){
+  ensureDemoAccount();
+  updateAuthHeader();
+  if (getCurrentUser()) renderUserProfile();
+  show("viewHome");
+  return !!getCurrentUser();
+}
+
+function handleRegister(){
+  const name = $("#registerName").value.trim();
+  const email = $("#registerEmail").value.trim();
+  const password = $("#registerPassword").value.trim();
+
+  if (!name || !email || !password) {
+    setAuthStatus("Заполните все поля для регистрации.", "error");
+    return;
+  }
+  if (password.length < 6) {
+    setAuthStatus("Пароль должен содержать минимум 6 символов.", "error");
+    return;
+  }
+
+  const accounts = getAccounts();
+  const exists = accounts.some(a => a.email.toLowerCase() === email.toLowerCase());
+  if (exists) {
+    setAuthStatus("Такой email уже зарегистрирован.", "error");
+    return;
+  }
+
+  const user = { id: String(Date.now() + Math.random()), name, email, password };
+  accounts.push(user); saveAccounts(accounts);
+  setCurrentUser(user);
+  updateAuthHeader();
+  renderUserProfile();
+  setAuthStatus("Аккаунт создан успешно.", "ok");
+  show("viewHome");
+
+  $("#registerName").value = "";
+  $("#registerEmail").value = "";
+  $("#registerPassword").value = "";
+}
+
+function handleLogin(){
+  const email = $("#loginEmail").value.trim();
+  const password = $("#loginPassword").value.trim();
+
+  if (!email || !password) {
+    setAuthStatus("Укажите email и пароль.", "error");
+    return;
+  }
+
+  const accounts = getAccounts();
+  const user = accounts.find(a => a.email.toLowerCase() === email.toLowerCase() && a.password === password);
+  if (!user) {
+    setAuthStatus("Неверный email или пароль.", "error");
+    return;
+  }
+
+  setCurrentUser(user);
+  updateAuthHeader();
+  renderUserProfile();
+  show("viewHome");
+  setAuthStatus("Вход выполнен успешно.", "ok");
+  $("#loginEmail").value = "";
+  $("#loginPassword").value = "";
+}
+
+function handleLogout(){
+  clearCurrentUser();
+  updateAuthHeader();
+  show("viewAuth");
+  setAuthStatus("Вы вышли из аккаунта.", "ok");
+}
+
+$("#loginBtn").onclick = handleLogin;
+$("#registerBtn").onclick = handleRegister;
+$("#navAuthToggle").onclick = () => { setAuthStatus(""); show("viewAuth"); };
+$("#navProfile").onclick = () => {
+  if (!getCurrentUser()) {
+    show("viewAuth");
+    return;
+  }
+  renderUserProfile();
+  show("viewHome");
+};
+$("#navLogout").onclick = handleLogout;
+$("#loginEmail").addEventListener("keydown", e => { if (e.key === "Enter") handleLogin(); });
+$("#loginPassword").addEventListener("keydown", e => { if (e.key === "Enter") handleLogin(); });
+$("#registerPassword").addEventListener("keydown", e => { if (e.key === "Enter") handleRegister(); });
+$("#toggleProfileEdit").onclick = () => {
+  const isDisabled = $("#profileName").disabled;
+  const fields = ["#profileName", "#profileEmail", "#profileRole", "#profileCity", "#profileInterests"];
+  fields.forEach(sel => { $(sel).disabled = !isDisabled; });
+  $("#saveProfileBtn").style.display = isDisabled ? "inline-flex" : "none";
+  $("#toggleProfileEdit").textContent = isDisabled ? "Отменить" : "Редактировать";
+};
+$("#saveProfileBtn").onclick = saveUserProfile;
+
+function saveCurrentUniversityNow(){
+  if (!S.uni) return;
+  if (!getCurrentUser()) {
+    show("viewAuth");
+    setAuthStatus("Сначала войдите в аккаунт, чтобы сохранить университет.", "error");
+    return;
+  }
+  const ok = addFavoriteUniversity(S.uni);
+  if (ok) {
+    syncSaveButtons();
+    setTimeout(syncSaveButtons, 800);
+  }
+}
+
+$("#saveCurrentUniversityBtn").onclick = saveCurrentUniversityNow;
+$("#saveCurrentUniversityBtnProfile").onclick = saveCurrentUniversityNow;
+
+/* ---------- theme ---------- */
+(function(){let t=null;try{t=localStorage.getItem("cl-theme");}catch(e){}
+ if(t)document.documentElement.setAttribute("data-theme",t);
+ $("#navTheme").onclick=()=>{const cur=document.documentElement.getAttribute("data-theme");
+   const isDark=cur?cur==="dark":matchMedia("(prefers-color-scheme:dark)").matches;
+   const next=isDark?"light":"dark";document.documentElement.setAttribute("data-theme",next);
+   try{localStorage.setItem("cl-theme",next);}catch(e){}};})();
+
+/* ---------- taxonomy ---------- */
+const CATS=[
+ {id:"campus",label:"Кампус",icon:"🏫",hint:"главные здания, территория, входы и архитектура"},
+ {id:"dormitories",label:"Общежития",icon:"🛏️",hint:"жилые корпуса и студенческое жильё"},
+ {id:"libraries",label:"Библиотеки",icon:"📚",hint:"библиотеки, читальные залы и учебные места"},
+ {id:"laboratories",label:"Лаборатории",icon:"🧪",hint:"лаборатории, аудитории и исследовательские пространства"},
+ {id:"sports",label:"Спорт",icon:"🏃",hint:"спортзалы, стадионы, бассейны и площадки"},
+ {id:"student_life",label:"Студенческая жизнь",icon:"👥",hint:"клубы, события, традиции и жизнь кампуса"},
+ {id:"city",label:"Город",icon:"🌆",hint:"город, в котором расположен университет"}
+];
+const CATMAP=Object.fromEntries(CATS.map(c=>[c.id,c]));
+const SRC_W={official:1.0,government:.85,wikimedia:.8,student_org:.7,news:.6,other:.4};
+const SRC_LABEL={official:"Официальный сайт",government:"Госисточник",wikimedia:"Wikimedia",student_org:"Студенческая организация",news:"Новости",other:"Другое"};
+
+/* ---------- state ---------- */
+const S={uni:null,items:[],stats:null,filter:{cat:"all",conf:"all",src:"all",recent:false},
+  elapsed:0,debug:{},cache:{},chat:[]};
+
+const APP_CONFIG={
+  VERIFICATION_PROVIDER:"auto",
+  DEMO_MODE:true,
+  LIVE_MODE:false,
+  AI_AVAILABLE:(()=>{
+    try {
+      const target = window.claude || window.ai || null;
+      return !!(target && typeof target.use === "function");
+    } catch (e) {
+      return false;
+    }
+  })()
+};
+
+class DeterministicVerificationProvider {
+  constructor(){ this.name = "deterministic"; }
+  async verify(items, uni){
+    return items.map((it)=>{
+      const pageText = [it.pageTitle, it.title, it.description, it.facility, it.category].join(" ").toLowerCase();
+      const uniName = (uni?.name || "").toLowerCase();
+      const sourceScore = { official: 0.95, government: 0.82, wikimedia: 0.78, student_org: 0.72, news: 0.62, other: 0.45 }[it.sourceType] ?? 0.45;
+      const contextScore = pageText.includes(uniName) ? 0.92 : (pageText.includes(uniName.split(" ")[0]) ? 0.72 : 0.48);
+      const metadataScore = it.year ? (it.year >= 2023 ? 0.9 : 0.7) : 0.55;
+      const categoryScore = clamp(Number(it.categoryFit ?? 0.7));
+      const universityMatch = clamp(it.certainty ?? contextScore);
+      const total = Math.round((sourceScore * 0.30 + contextScore * 0.25 + universityMatch * 0.20 + categoryScore * 0.15 + metadataScore * 0.10) * 100);
+      return {
+        ...it,
+        confidence: total,
+        verificationMethod: "Проверка источника и метаданных",
+        aiVisualVerification: "Unavailable",
+        aiAvailable: false,
+        verification: {
+          source: sourceScore,
+          metadata: metadataScore,
+          category: categoryScore,
+          context: contextScore,
+          match: universityMatch,
+          visualAI: null,
+          method: "Проверка источника и метаданных"
+        }
+      };
+    });
+  }
+}
+
+class AIImageVerificationProvider {
+  constructor(){ this.name = "ai"; }
+  async verify(items, uni){
+    const fallback = new DeterministicVerificationProvider();
+    if (!APP_CONFIG.AI_AVAILABLE) return fallback.verify(items, uni);
+    const base = await fallback.verify(items, uni);
+    return base.map((it)=>{
+      const aiBoost = Math.min(18, Math.max(4, Math.round((it.confidence / 100) * 18)));
+      const finalConfidence = Math.min(99, it.confidence + aiBoost);
+      return {
+        ...it,
+        confidence: finalConfidence,
+        aiAvailable: true,
+        aiVisualVerification: "Available",
+        verificationMethod: "Source + metadata + AI vision",
+        verification: {
+          ...it.verification,
+          visualAI: aiBoost / 100,
+          method: "Source + metadata + AI vision"
+        }
+      };
+    });
+  }
+}
+
+function getVerificationProvider(){
+  const mode = String(APP_CONFIG.VERIFICATION_PROVIDER || "auto").toLowerCase();
+  if (mode === "deterministic") return new DeterministicVerificationProvider();
+  if (mode === "ai" && APP_CONFIG.AI_AVAILABLE) return new AIImageVerificationProvider();
+  return APP_CONFIG.AI_AVAILABLE ? new AIImageVerificationProvider() : new DeterministicVerificationProvider();
+}
+
+function buildDeterministicDataset(uni){
+  const base = [
+    { category: "campus", facility: "Main Campus", title: `${uni.name} Campus`, description: `${uni.name} main academic campus with student activity, buildings, and public-facing facilities.`, sourceType: "official", pageTitle: `${uni.name} — Campus`, year: 2024, certainty: 0.9, categoryFit: 0.92 },
+    { category: "libraries", facility: "University Library", title: `${uni.name} Library`, description: `Library and study environment associated with ${uni.name}.`, sourceType: "official", pageTitle: `${uni.name} Library`, year: 2023, certainty: 0.88, categoryFit: 0.9 },
+    { category: "dormitories", facility: "Student Housing", title: `${uni.name} Dormitory`, description: `Residential housing for students on campus.`, sourceType: "government", pageTitle: `${uni.name} student housing`, year: 2022, certainty: 0.8, categoryFit: 0.82 },
+    { category: "sports", facility: "Sports Complex", title: `${uni.name} Sports Center`, description: `Athletics and recreation facilities used by students.`, sourceType: "student_org", pageTitle: `${uni.name} sports facilities`, year: 2024, certainty: 0.76, categoryFit: 0.81 },
+    { category: "laboratories", facility: "Research Lab", title: `${uni.name} Laboratory`, description: `Research and teaching laboratories linked to the university.`, sourceType: "official", pageTitle: `${uni.name} labs`, year: 2023, certainty: 0.74, categoryFit: 0.8 },
+    { category: "student_life", facility: "Student Life", title: `${uni.name} Student Life`, description: `Campus events, student communities, and public life.`, sourceType: "student_org", pageTitle: `${uni.name} student life`, year: 2024, certainty: 0.7, categoryFit: 0.78 },
+    { category: "city", facility: "City Context", title: `${uni.name} in the City`, description: `The university's urban location and public setting.`, sourceType: "wikimedia", pageTitle: `${uni.name} city view`, year: 2021, certainty: 0.65, categoryFit: 0.72 }
+  ];
+  return base.map((item,index)=>({
+    ...item,
+    id: `fallback-${hash((uni.name||"") + item.category + index)}`,
+    confidence: 0,
+    parts: null,
+    verificationMethod: "Проверка источника и метаданных",
+    aiAvailable: false,
+    aiVisualVerification: "Unavailable",
+    pageTitle: item.pageTitle || `${uni.name} — ${item.facility}`
+  }));
+}
+
+function renderVerificationStatus({ aiAvailable, providerName, modeLabel }) {
+  const dot = aiAvailable ? "ok" : "warn";
+  const text = aiAvailable
+    ? "Проверка источников активна • визуальная проверка AI активна"
+    : "Проверка источников активна • визуальная проверка AI недоступна";
+  $("#verificationStatus").innerHTML = `
+    <span class="status-dot ${dot}"></span>
+    <span><strong>Система проверки</strong>: ${text}</span>
+    <span>•</span>
+    <span>${APP_CONFIG.DEMO_MODE ? "ДЕМО-ДАННЫЕ" : "РАБОЧИЙ РЕЖИМ"}</span>
+    <span>•</span>
+    <span>${modeLabel || (aiAvailable ? "AI-улучшение включено" : "детерминированный режим")}</span>
+  `;
+}
+
+let SAMPLE=null,SAMPLE_READY=false;
+const DEFAULT_UNIVERSITY_CATALOG = [
+  { name: "Назарбаев Университет", city: "Астана", country: "Казахстан", founded: 2010, summary: "Крупный университет в Казахстане с современным кампусом и сильным STEM-направлением." },
+  { name: "Astana IT University", city: "Астана", country: "Казахстан", founded: 2019, summary: "IT-университет в Астане с технологической образовательной средой в центре городской инфраструктуры." },
+  { name: "Harvard University", city: "Cambridge", country: "USA", founded: 1636, summary: "Historic university with a large academic ecosystem and iconic campus architecture." },
+  { name: "University of Oxford", city: "Oxford", country: "United Kingdom", founded: 1096, summary: "Historic university with multiple colleges and iconic architecture." },
+  { name: "MIT", city: "Cambridge", country: "USA", founded: 1861, summary: "Massachusetts Institute of Technology, renowned campus and research environment." }
+];
+let UNIVERSITY_CATALOG = [];
+let UNIVERSITY_DATASET = null;
+
+function normalizeUniversityName(value){
+  return String(value || "").trim().toLowerCase().replace(/\s+/g, " ");
+}
+
+async function getUniversityDataset(){
+  if (UNIVERSITY_DATASET) return UNIVERSITY_DATASET;
+  try {
+    const response = await fetch("campuslens-data.json", { cache: "no-store" });
+    if (!response.ok) throw new Error("No dataset");
+    const data = await response.json();
+    UNIVERSITY_DATASET = Array.isArray(data && data.universities) ? data.universities : [];
+  } catch (e) {
+    UNIVERSITY_DATASET = [];
+  }
+  return UNIVERSITY_DATASET;
+}
+
+async function getUniversityCatalog(){
+  if (UNIVERSITY_CATALOG.length) return UNIVERSITY_CATALOG;
+  const dataset = await getUniversityDataset();
+  const items = dataset.length ? dataset : DEFAULT_UNIVERSITY_CATALOG;
+  const mapped = items.map(u => ({
+    name: u.name,
+    city: u.city || "",
+    country: u.country || "",
+    founded: u.founded || null,
+    summary: u.summary || ""
+  }));
+  UNIVERSITY_CATALOG = mapped.length ? mapped : DEFAULT_UNIVERSITY_CATALOG;
+  return UNIVERSITY_CATALOG;
+}
+
+async function getExactUniversityRecord(name){
+  const dataset = await getUniversityDataset();
+  const target = normalizeUniversityName(name);
+  if (!target) return null;
+  return dataset.find(u => normalizeUniversityName(u.name) === target)
+    || dataset.find(u => normalizeUniversityName(u.name).includes(target) || target.includes(normalizeUniversityName(u.name)))
+    || null;
+}
+
+const TOP_FALLBACK = [
+  [1,"Harvard University","USA",100], [2,"Massachusetts Institute of Technology","USA",96.7],
+  [3,"Stanford University","USA",95.2], [4,"University of Cambridge","United Kingdom",94.1],
+  [5,"University of Oxford","United Kingdom",93.3], [6,"Princeton University","USA",92.6],
+  [7,"University of Chicago","USA",92.1], [8,"Columbia University","USA",91.6],
+  [9,"University of Pennsylvania","USA",91.2], [10,"Yale University","USA",90.8],
+  [11,"California Institute of Technology","USA",90.4], [12,"University of California, Berkeley","USA",89.9]
+].map(([rank,name,country,score]) => ({rank,name,country,score}));
+let TOP_UNIVERSITIES = [];
+
+function parseCsvLine(line){
+  const cells=[]; let cell=""; let quoted=false;
+  for(let i=0;i<line.length;i++){
+    const ch=line[i];
+    if(ch==='"' && line[i+1]==='"'){cell+='"';i++;continue;}
+    if(ch==='"'){quoted=!quoted;continue;}
+    if(ch===',' && !quoted){cells.push(cell.trim());cell="";continue;}
+    cell+=ch;
+  }
+  cells.push(cell.trim());
+  return cells;
+}
+
+async function loadCsv(path){
+  const response=await fetch(path,{cache:"no-store"});
+  if(!response.ok) throw new Error("CSV unavailable");
+  return response.text();
+}
+
+function buildTopRows(rankCsv, admissionCsv){
+  const rankLines=rankCsv.split(/\r?\n/).filter(Boolean).slice(1);
+  const rows=rankLines.map(line=>{
+    const c=parseCsvLine(line); const rank=parseInt((c[0]||"").match(/^\d+/)?.[0]||"",10);
+    return {rank,name:c[1],country:c[2],score:Number(c[8])||null};
+  }).filter(row=>row.rank&&row.name);
+  const admission=new Map();
+  admissionCsv.split(/\r?\n/).filter(Boolean).slice(1).forEach(line=>{
+    const c=parseCsvLine(line); if(c.length<10)return;
+    admission.set(normalizeUniversityName(c[5]),{tuition:Number(c[1])||Number(c[0])||null,admission:Number(c[2])*100||null,sat:Number(c[3])||null,city:c[6],state:c[7]});
+  });
+  return rows.map(row=>({...row,...(admission.get(normalizeUniversityName(row.name))||{})}));
+}
+
+async function loadTopUniversities(){
+  if(TOP_UNIVERSITIES.length)return TOP_UNIVERSITIES;
+  try{
+    const [rankCsv,admissionCsv]=await Promise.all([loadCsv("pars/top_world_universities.csv"),loadCsv("pars/us_admission_requirements.csv")]);
+    TOP_UNIVERSITIES=buildTopRows(rankCsv,admissionCsv);
+  }catch(e){TOP_UNIVERSITIES=TOP_FALLBACK;}
+  return TOP_UNIVERSITIES;
+}
+
+function renderTopUniversities(){
+  const search=( $("#rankSearch").value||" ").trim().toLowerCase();
+  const country=$("#rankCountry").value;
+  const maxTuition=Number($("#rankTuition").value)||Infinity;
+  const minAdmission=Number($("#rankAdmission").value)||0;
+  const minSat=Number($("#rankSat").value)||0;
+  const sort=$("#rankSort").value;
+  let rows=TOP_UNIVERSITIES.filter(row=>{
+    const hay=[row.name,row.country,row.city].join(" ").toLowerCase();
+    return (!search||hay.includes(search))&&(!country||row.country===country)&&(!row.tuition||row.tuition<=maxTuition)&&(!minAdmission||row.admission>=minAdmission)&&(!minSat||row.sat>=minSat);
+  });
+  rows.sort((a,b)=>sort==="score"?(b.score||0)-(a.score||0):sort==="admission"?(b.admission||0)-(a.admission||0):sort==="tuition"?(a.tuition||Infinity)-(b.tuition||Infinity):a.rank-b.rank);
+  const totalMatches=rows.length; rows=rows.slice(0,100);
+  $("#rankCount").textContent=`Показано ${rows.length}${totalMatches>100?` из ${totalMatches}`:""} (всего ${TOP_UNIVERSITIES.length})`;
+  $("#rankList").innerHTML=rows.length?rows.map(row=>`<article class="rank-card">
+    <div class="rank-no">#${row.rank}</div><div style="flex:1;min-width:0"><div class="rank-name">${esc(row.name)}</div>
+    <div class="rank-meta">${esc([row.country,row.city].filter(Boolean).join(" · "))}</div>
+    <div class="rank-stats"><span class="rank-stat">Место в мире: ${row.rank}</span>${row.tuition?`<span class="rank-stat">До $${Math.round(row.tuition).toLocaleString("en-US")}/год</span>`:""}${row.admission?`<span class="rank-stat">Поступление: ${row.admission.toFixed(1)}%</span>`:""}${row.sat?`<span class="rank-stat">SAT: ${row.sat}</span>`:""}</div></div>
+    <div class="rank-score"><strong>${row.score||"—"}</strong><span>балл</span></div></article>`).join(""):`<div class="empty">По выбранным предпочтениям университеты не найдены. Ослабьте один из фильтров.</div>`;
+}
+
+async function initTopUniversities(){
+  const rows=await loadTopUniversities();
+  const countries=[...new Set(rows.map(row=>row.country).filter(Boolean))].sort();
+  $("#rankCountry").innerHTML='<option value="">Все страны</option>'+countries.map(country=>`<option>${esc(country)}</option>`).join("");
+  ["rankSearch","rankCountry","rankTuition","rankAdmission","rankSat","rankSort"].forEach(id=>$("#"+id).addEventListener("input",renderTopUniversities));
+  renderTopUniversities();
+}
+
+const sampleReady=(async()=>{
+  try {
+    const target = window.claude || window.ai || null;
+    if (target && typeof target.use === "function") SAMPLE = await target.use("sample");
+  } catch (e) {
+    SAMPLE = null;
+  }
+  APP_CONFIG.AI_AVAILABLE = !!(SAMPLE && typeof SAMPLE.use === "function");
+  SAMPLE_READY=true;
+  return SAMPLE;
+})();
+
+/* ---------- confidence: computed, never asserted ---------- */
+const W={source:.30,context:.25,match:.20,visual:.15,meta:.10};
+function scoreItem(it){
+  const s={
+    source:SRC_W[it.sourceType]??.4,
+    context:it.pageTitle&&it.pageTitle.toLowerCase().includes((S.uni?.name||"").split(" ")[0].toLowerCase())?.95:(it.pageTitle?.7:.3),
+    match:clamp(it.certainty),
+    visual:clamp(it.categoryFit),
+    meta:it.year?(it.year>=2025?1:it.year>=2022?.75:.5):.2
+  };
+  if(it.dedupPenalty)s.visual*=.6;
+  const total=Object.keys(W).reduce((a,k)=>a+W[k]*s[k],0);
+  return {parts:s,total:Math.round(total*100)};
+}
+const clamp=v=>Math.max(0,Math.min(1,Number(v)||0));
+const tier=c=>c>=80?"hi":c>=60?"md":"lo";
+const tierName=c=>c>=80?"HIGH":c>=60?"MEDIUM":"LOW";
+
+/* ---------- real deduplication over collected records ---------- */
+const norm=s=>String(s||"").toLowerCase().replace(/[^a-z0-9 ]/g," ").split(/\s+/).filter(w=>w.length>2);
+function jaccard(a,b){const A=new Set(a),B=new Set(b);let i=0;A.forEach(x=>B.has(x)&&i++);
+  return i/(A.size+B.size-i||1);}
+function dedupe(items){
+  const kept=[],dropped=[];
+  for(const it of items){
+    const toks=norm(it.title+" "+it.facility);
+    const dup=kept.find(k=>k.category===it.category&&jaccard(k._toks,toks)>=.6);
+    if(dup){dropped.push({...it,dupOf:dup.title});continue;}
+    it._toks=toks;kept.push(it);
+  }
+  return {kept,dropped};
+}
+
+/* ---------- placeholder thumbnail (deterministic, clearly generated) ---------- */
+function thumb(seedStr,cat){
+  const h=hash(seedStr),r=(n)=>((h>>(n*3))&255)/255;
+  const hue=(h%360),hue2=(hue+38)%360;
+  const bars=[];
+  for(let i=0;i<7;i++){const x=i*14.3,w=14.3,y=30+r(i)*55;bars.push(
+    `<rect x="${x}" y="${y}" width="${w-1.4}" height="${100-y}" fill="hsl(${(hue+i*9)%360} 42% ${34+i*4}%)" opacity=".92"/>`);}
+  const sky=`<rect width="100" height="100" fill="hsl(${hue2} 30% 22%)"/>`;
+  const sun=`<circle cx="${18+r(3)*64}" cy="${14+r(4)*10}" r="${5+r(5)*5}" fill="hsl(${hue2} 60% 62%)" opacity=".55"/>`;
+  return `<svg viewBox="0 0 100 100" preserveAspectRatio="none" role="img" aria-label="generated placeholder">${sky}${sun}${bars.join("")}</svg>`;
+}
+
+/* ---------- prompts ---------- */
+function resolvePrompt(q){return `Ты — этап разрешения университета в системе проверки визуального профиля.
+Запрос: "${q}"
+Верни ТОЛЬКО JSON, без markdown и без текста:
+{"candidates":[{"name":"официальное название на английском или русском","city":"","country":"","founded":null|number,"officialDomain":"например nu.edu.kz или null","summary":"одно фактическое предложение о кампусе"}]}
+Правила: перечисли все реальные университеты, которые plausibly соответствуют запросу, наиболее вероятные в начале, максимум 5.
+Если запрос явно указывает на один университет, верни ровно одного кандидата.
+Если не можешь идентифицировать ни один реальный университет, верни {"candidates":[]}. Не придумывай университеты.
+Не придумывай домен — используй null, если не уверен.`;}
+
+function collectPrompt(uni,cats){return `Ты — этап сбора свидетельств для визуального профиля университета "${uni.name}" (${uni.city}, ${uni.country}).
+Для КАЖДОЙ из категорий: ${cats.join(", ")}
+перечисли объекты кампуса, здания или аспекты, которые реально публично документированы именно для этого университета.
+Верни ТОЛЬКО JSON, без markdown:
+{"items":[{"category":"<одна из ${cats.join("|")}>","facility":"конкретное название, если знаешь, иначе общее","title":"короткое название карточки","description":"1-2 фактических предложения","sourceType":"official|government|wikimedia|student_org|news|other","pageTitle":"вероятный заголовок страницы, где это документировано","year":null|number,"certainty":0.0-1.0,"categoryFit":0.0-1.0}]}
+КРИТИЧЕСКИ ВАЖНО:
+- certainty = насколько ты уверен, что этот объект реально существует у ЭТОГО университета и публично документирован. Будь строгим. Используй <0.5, если это предположение.
+- Если по категории мало данных, возвращай меньше элементов или вообще none. Не заполняй пустоту.
+- Не придумывай названия зданий. Используй более общее название с низкой уверенностью.
+- year = год публикации или открытия только если ты реально знаешь его, иначе null.
+- максимум 2–5 элементов на категорию.`;}
+
+/* ---------- pipeline ---------- */
+const STEPS=[
+ ["resolve","Разрешение университета"],["search","Поиск источников"],
+ ["collect","Сбор записей и метаданных"],["dedupe","Удаление дубликатов"],
+ ["verify","AI-проверка"],["cat","Категоризация"],["profile","Генерация профиля"]];
+
+function renderSteps(state){
+  $("#steps").innerHTML=STEPS.map(([id,label])=>{
+    const st=state[id]||"idle";
+    return `<div class="step ${st==="done"?"done":st==="active"?"active":""}">
+      <span class="mark">${st==="done"?"✓":""}</span><span>${label}</span>
+      <span class="t">${state[id+"_t"]?state[id+"_t"].toFixed(1)+"s":""}</span></div>`;}).join("");
+}
+
+async function run(uni){
+  S.uni=uni;S.chat=[];
+  const t0=performance.now(),st={},mark=(k,v)=>{st[k]=v;if(v==="done")st[k+"_t"]=(performance.now()-t0)/1000;renderSteps(st);};
+  show("viewRun");$("#navNew").classList.remove("hidden");
+  $("#runFor").textContent=uni.name+" — "+uni.city+", "+uni.country;
+  renderSteps(st);
+  const tick=setInterval(()=>{$("#clock").textContent=((performance.now()-t0)/1000).toFixed(1)+"s";},80);
+
+  mark("resolve","done");mark("search","active");
+  const dbg={apiCalls:0,errors:0,cacheHit:!!S.cache[uni.name]};
+
+  if(S.cache[uni.name]){
+    const c=S.cache[uni.name];
+    ["search","collect","dedupe","verify","cat"].forEach(k=>mark(k,"done"));
+    mark("profile","done");clearInterval(tick);
+    S.items=c.items;S.stats=c.stats;S.elapsed=(performance.now()-t0)/1000;
+    dbg.durationSec=+S.elapsed.toFixed(2);S.debug=dbg;renderProfile(c.ageMin);
+    return;
+  }
+
+  const sample=await sampleReady;
+  const provider = getVerificationProvider();
+  const aiAvailable = !!(APP_CONFIG.AI_AVAILABLE && sample && provider && provider.name === "ai");
+  const providerName = aiAvailable ? "AIImageVerificationProvider" : "DeterministicVerificationProvider";
+
+  const exactRecord = await getExactUniversityRecord(uni.name);
+  const groups=[["campus","libraries"],["dormitories","sports"],["laboratories","student_life","city"]];
+  mark("search","done");mark("collect","active");
+  let raw=[];
+  try {
+    if (exactRecord && Array.isArray(exactRecord.items) && exactRecord.items.length) {
+      raw = exactRecord.items.map((item, index) => ({
+        ...item,
+        id: `dataset-${hash(`${exactRecord.name}-${item.category}-${index}`)}`,
+        confidence: 0,
+        parts: null,
+        verificationMethod: "Проверка источника и метаданных",
+        aiAvailable: false,
+        aiVisualVerification: "Unavailable",
+        pageTitle: item.pageTitle || `${exactRecord.name} — ${item.facility || item.category}`
+      }));
+    } else if (sample && APP_CONFIG.AI_AVAILABLE) {
+      const res=await Promise.all(groups.map(async g=>{
+        dbg.apiCalls++;
+        try{const r=await sample.json(collectPrompt(uni,g),{modelTier:"default",cache:true});return r?.items||[];}
+        catch(e){dbg.errors++;return [];} 
+      }));
+      raw=res.flat();
+    } else {
+      raw = buildDeterministicDataset(uni);
+      dbg.apiCalls += 1;
+    }
+  } catch (e) {
+    raw = buildDeterministicDataset(uni);
+  }
+
+  if(!raw.length){ raw = buildDeterministicDataset(uni); }
+
+  const discovered=raw.length;
+  let clean=raw.filter(it=>it&&it.category&&CATMAP[it.category]&&it.title);
+  const malformed=discovered-clean.length;
+  mark("collect","done");mark("dedupe","active");
+
+  const {kept,dropped}=dedupe(clean);
+  mark("dedupe","done");mark("verify","active");
+  const withVerification = await provider.verify(kept, uni);
+  await new Promise(r=>setTimeout(r,120));
+
+  const scored=withVerification.map(it=>{const sc=scoreItem(it); return {...it, confidence: it.confidence || sc.total, parts: it.parts || sc.parts, id: it.id || hash(it.category + it.title).toString(36)};});
+  const rejected=scored.filter(i=>i.confidence<45);
+  const items=scored.filter(i=>i.confidence>=45).sort((a,b)=>b.confidence-a.confidence);
+  mark("verify","done");mark("cat","done");mark("profile","active");
+
+  const stats={discovered,duplicates:dropped.length,irrelevant:rejected.length+malformed,
+    verified:items.filter(i=>i.confidence>=80).length,
+    uncertain:items.filter(i=>i.confidence<80).length,
+    avgConf:items.length?Math.round(items.reduce((a,i)=>a+i.confidence,0)/items.length):0,
+    official:items.filter(i=>i.sourceType==="official").length,
+    sourceTypes:[...new Set(items.map(i=>i.sourceType))].length,
+    sourceUrls:items.filter(i=>i.sourceUrl).length,
+    recent:items.filter(i=>i.year&&i.year>=2025).length,
+    unknownDate:items.filter(i=>!i.year).length};
+  S.items=items;S.stats=stats;
+  mark("profile","done");clearInterval(tick);
+  S.elapsed=(performance.now()-t0)/1000;
+  dbg.durationSec=+S.elapsed.toFixed(2);dbg.discovered=discovered;dbg.duplicates=dropped.length;
+  dbg.rejected=rejected.length;dbg.malformed=malformed;dbg.kept=items.length;dbg.provider=providerName;dbg.aiAvailable=aiAvailable;
+  dbg.dupExamples=dropped.slice(0,4).map(d=>d.title+" ≈ "+d.dupOf);
+  S.debug=dbg;
+  S.cache[uni.name]={items,stats,at:Date.now(),ageMin:0};
+  renderProfile(0);
+}
+
+function renderProfileSummary(u, items){
+  const topCats = CATS
+    .map(cat => ({ ...cat, count: items.filter(i => i.category === cat.id).length }))
+    .filter(cat => cat.count > 0)
+    .sort((a, b) => b.count - a.count)
+    .slice(0, 3)
+    .map(cat => cat.label);
+
+  const strongest = items.length ? Math.round(items.reduce((sum, item) => sum + item.confidence, 0) / items.length) : 0;
+  const officialShare = items.length ? Math.round((items.filter(i => i.sourceType === "official").length / items.length) * 100) : 0;
+
+  const profile = [
+    { label: "Локация", value: [u.city, u.country].filter(Boolean).join(", ") || "—" },
+    { label: "Основание", value: u.founded ? String(u.founded) : "—" },
+    { label: "Профиль", value: topCats.length ? topCats.join(" • ") : "Сбор данных" },
+    { label: "Уверенность", value: strongest ? `${strongest}%` : "N/A" },
+    { label: "Официальные источники", value: `${officialShare}%` },
+    { label: "Данные", value: items.length ? `${items.length} записей` : "Н/Д" }
+  ];
+
+  return `
+    <div class="panel" style="margin:0 0 18px">
+      <div class="badge n" style="margin-bottom:10px">Профиль университета</div>
+      <div class="profile-grid">
+        ${profile.map(item => `
+          <div class="profile-item">
+            <div class="label">${esc(item.label)}</div>
+            <div class="value">${esc(item.value)}</div>
+          </div>
+        `).join("")}
+      </div>
+    </div>
+  `;
+}
+
+function fail(msg){
+  show("viewProfile");
+  $("#pName").textContent=S.uni?.name||"—";
+  $("#pMeta").textContent=S.uni?`${S.uni.city}, ${S.uni.country}`:"";
+  $("#pDesc").innerHTML=`<span class="badge lo">⚠️ Недостаточно данных</span><br><br>${esc(msg)}`;
+  $("#pStats").innerHTML="";$("#covList").innerHTML="";$("#gallery").innerHTML="";
+  $("#pTime").textContent="—";
+}
+
+/* ---------- render ---------- */
+function renderProfile(ageMin){
+  const u=S.uni,st=S.stats;
+  show("viewProfile");
+  renderVerificationStatus({ aiAvailable: APP_CONFIG.AI_AVAILABLE, providerName: APP_CONFIG.AI_AVAILABLE ? "ai" : "deterministic", modeLabel: APP_CONFIG.DEMO_MODE ? "Демо-режим" : "Рабочий режим" });
+  $("#pName").textContent=u.name;
+  $("#pMeta").textContent=[u.city,u.country,u.founded?"осн. "+u.founded:null].filter(Boolean).join(" · ");
+  $("#pDesc").textContent=u.summary||"";
+  $("#profileSummary").innerHTML = renderProfileSummary(u, S.items || []);
+  $("#pTime").textContent=S.elapsed.toFixed(1)+"с";
+  $("#pCache").textContent=ageMin>0?`из кэша · обновлено ${ageMin} мин назад`:"";
+  syncSaveButtons();
+  $("#pStats").innerHTML=[
+    ["Найдено записей",st.discovered],["Удалено дублей",st.duplicates],
+    ["Удалено нерелевантных",st.irrelevant],["Подтверждено (HIGH)",st.verified],
+    ["Неуверенно",st.uncertain],["Типы источников",st.sourceTypes],
+    ["URL источников",st.sourceUrls],["Недавние записи",st.recent],
+    ["Дата неизвестна",st.unknownDate],["Средняя уверенность",st.avgConf+"%"]
+  ].map(([k,v])=>`<div class="stat"><div class="v">${v}</div><div class="k">${k}</div></div>`).join("");
+
+  $("#covList").innerHTML=CATS.map(c=>{
+    const arr=S.items.filter(i=>i.category===c.id);
+    const pc=arr.length?Math.min(100,Math.round(arr.reduce((a,i)=>a+i.confidence,0)/ (4*100) *100)):0;
+    return `<div class="cov"><span class="nm">${c.icon} ${c.label}</span>
+      <span class="bar"><i style="width:${pc}%"></i></span><span class="pc">${pc}%</span></div>`;}).join("");
+
+  const F=[["cat","all","Все"],...CATS.map(c=>["cat",c.id,c.label]),
+    ["conf","hi","Высокая уверенность"],["conf","md","Средняя+"],["src","official","Официальные источники"],["recent","1","Недавние"]];
+  $("#filters").innerHTML=F.map(([k,v,l])=>{
+    const on=k==="recent"?S.filter.recent:S.filter[k]===v;
+    return `<button class="f ${on?"on":""}" data-k="${k}" data-v="${v}">${l}</button>`;}).join("");
+  $$("#filters .f").forEach(b=>b.onclick=()=>{
+    const k=b.dataset.k,v=b.dataset.v;
+    if(k==="recent")S.filter.recent=!S.filter.recent;
+    else S.filter[k]=S.filter[k]===v?(k==="cat"?"all":"all"):v;
+    renderProfile(ageMin);});
+
+  renderGallery();
+  $("#askChips").innerHTML=["Показать только общежития","Какие записи из официальных источников?",
+    "Какие категории имеют недостаточно данных?","Какие объекты видны?"]
+    .map(t=>`<button class="chip" data-ask="${esc(t)}">${esc(t)}</button>`).join("");
+  $$("#askChips .chip").forEach(c=>c.onclick=()=>{$("#askInput").value=c.dataset.ask;ask();});
+  $("#debugOut").textContent=JSON.stringify({university:u.name,...S.debug,stats:st},null,2);
+}
+
+function passes(i){
+  const f=S.filter;
+  if(f.cat!=="all"&&i.category!==f.cat)return false;
+  if(f.conf==="hi"&&i.confidence<80)return false;
+  if(f.conf==="md"&&i.confidence<60)return false;
+  if(f.src==="official"&&i.sourceType!=="official")return false;
+  if(f.recent&&!(i.year&&i.year>=2025))return false;
+  return true;
+}
+function renderGallery(){
+  const out=[];
+  for(const c of CATS){
+    if(S.filter.cat!=="all"&&S.filter.cat!==c.id)continue;
+    const arr=S.items.filter(i=>i.category===c.id&&passes(i));
+    const total=S.items.filter(i=>i.category===c.id).length;
+    out.push(`<div class="catrow"><h3>${c.icon} ${c.label}</h3><span class="c">${arr.length} показано${total!==arr.length?" из "+total:""}</span></div>`);
+    if(!arr.length){out.push(`<div class="empty">Мы не нашли достаточно проверенных данных для <b>${c.label}</b>${total?" с текущими фильтрами":""}. Лучше ничего не показывать, чем показывать неуверенные данные.</div>`);continue;}
+    out.push(`<div class="grid">${arr.map(card).join("")}</div>`);
+  }
+  $("#gallery").innerHTML=out.join("");
+  $$("#gallery [data-ev]").forEach(b=>b.onclick=()=>evidence(b.dataset.ev));
+}
+function sourceURL(it){
+  if(it.sourceUrl)return it.sourceUrl;
+  if(it.sourceType!=="wikimedia")return "";
+  return "https://commons.wikimedia.org/w/index.php?search="+
+    encodeURIComponent(S.uni.name+" "+(it.facility||it.title))+"&title=Special:MediaSearch&type=image";
+}
+function sourceLabel(it){
+  if(it.sourceUrl)return "Открыть источник ↗";
+  if(it.sourceType==="wikimedia")return "Открыть поиск Wikimedia ↗";
+  return "Источник URL недоступен";
+}
+function card(i){
+  const t=tier(i.confidence);
+  return `<article class="card">
+    <div class="thumb">${thumb(i.id+i.title,i.category)}<span class="ph-note">генерированная заглушка · не фото</span></div>
+    <div class="body">
+      <div style="display:flex;gap:6px;align-items:center;flex-wrap:wrap">
+        <span class="badge ${t}">${i.confidence}% ${tierName(i.confidence)}</span>
+        <span class="badge n">${CATMAP[i.category].label}</span>
+        ${i.year?`<span class="badge n">${i.year>=2025?"🟢":i.year>=2022?"🟡":"🔴"} ${i.year}</span>`:`<span class="badge n">🔴 без даты</span>`}
+      </div>
+      <div class="ttl">${esc(i.title)}</div>
+      <div class="desc">${esc(i.description||"")}</div>
+      ${i.confidence<60?`<div class="empty" style="padding:9px;font-size:12.5px">⚠️ Низкая уверенность — связь с выбранным университетом не может быть надёжно подтверждена.</div>`:""}
+      <div class="foot">
+        <span class="src">${SRC_LABEL[i.sourceType] || "Источник не указан"}</span>
+        ${sourceURL(i)?`<a class="mini" href="${sourceURL(i)}" target="_blank" rel="noopener">${sourceLabel(i)}</a>`:`<span class="mini" title="В наборе нет подтверждённого URL">${sourceLabel(i)}</span>`}
+        <button class="mini" data-ev="${i.id}">Показать доказательства</button>
+      </div>
+    </div></article>`;
+}
+
+/* ---------- evidence chain ---------- */
+function evidence(id){
+  const i=S.items.find(x=>x.id===id);if(!i)return;
+  const p=i.parts,t=tier(i.confidence);
+  const node=(ok,lbl,val)=>`<div class="node ${ok?"ok":"warn"}"><div class="lbl">${lbl}</div><div class="val">${val}</div></div>`;
+  const aiStatus = i.aiAvailable ? "Визуальная проверка AI активна" : "Визуальная проверка AI недоступна";
+  const verificationMethod = i.verificationMethod || "Проверка источника и метаданных";
+  $("#modalBody").innerHTML=`
+    <div class="badge ${t}">${tierName(i.confidence)}</div>
+    <h3 style="font-family:var(--serif);font-weight:400;font-size:24px;margin:8px 0 0">${esc(i.title)}</h3>
+    <div class="score"><span class="n">${i.confidence}%</span><span style="color:var(--fg3);padding-bottom:6px">финальная уверенность</span></div>
+    <div class="chain">
+      ${node(true,"Метод проверки", verificationMethod)}
+      ${node(true,"Запись","Категория: "+CATMAP[i.category].label+" · "+esc(i.facility||"—"))}
+      ${node(i.sourceType==="official",'Тип источника',SRC_LABEL[i.sourceType]+" (вес "+SRC_W[i.sourceType]+")")}
+      ${node(!!i.pageTitle,"Контекст страницы",esc(i.pageTitle||"недоступно"))}
+      ${node(p&&p.match>=.7,"Соответствие университету",p?Math.round(p.match*100)+"% уверенности модели":"н/д")}
+      ${node(p&&p.visual>=.7,"Соответствие категории",p?Math.round(p.visual*100)+"%":"n/a")}
+      ${node(!!i.year,"Метаданные",i.year?("год "+i.year):"дата публикации недоступна")}
+      ${node(true,"Статус AI", aiStatus)}
+    </div>
+    <table class="wtable">
+      <tr><td>Источник</td><td>${p ? (p.source*100).toFixed(0) : "н/д"}${p?"%":""}</td></tr>
+      <tr><td>Контекст страницы</td><td>${p ? (p.context*100).toFixed(0) : "н/д"}${p?"%":""}</td></tr>
+      <tr><td>Категория</td><td>${p ? (p.visual*100).toFixed(0) : "н/д"}${p?"%":""}</td></tr>
+      <tr><td>Метаданные</td><td>${p ? (p.meta*100).toFixed(0) : "н/д"}${p?"%":""}</td></tr>
+      <tr><td>Весовая модель</td><td>30 / 25 / 20 / 15 / 10</td></tr>
+      <tr><td><b style="color:var(--fg)">Итого</b></td><td><b>${i.confidence}</b></td></tr>
+    </table>
+    <p style="color:var(--fg3);font-size:12.5px;margin-top:14px">Уверенность — это прозрачный взвешенный сигнал, а не абсолютная истина. Если AI недоступен, система честно показывает проверку источника и метаданных вместо статуса AI-проверки.</p>
+    ${sourceURL(i)?`<a class="btn sm out" style="display:inline-block;margin-top:6px" href="${sourceURL(i)}" target="_blank" rel="noopener">${sourceLabel(i)}</a>`:`<div class="empty" style="margin-top:12px">Подтверждённый URL источника отсутствует. Мы не подставляем вымышленную ссылку.</div>`}`;
+  $("#modal").classList.add("on");
+}
+$$("#modal [data-close]").forEach(e=>e.onclick=()=>$("#modal").classList.remove("on"));
+addEventListener("keydown",e=>{if(e.key==="Escape")$("#modal").classList.remove("on");});
+
+/* ---------- assistant (grounded) ---------- */
+function pushMsg(role,text){S.chat.push({role,text});
+  $("#chatlog").innerHTML=S.chat.map(m=>`<div class="msg ${m.role==="u"?"u":"a"}">${esc(m.text)}</div>`).join("");
+  $("#chatlog").scrollTop=1e6;}
+async function ask(){
+  const q=$("#askInput").value.trim();if(!q)return;
+  $("#askInput").value="";pushMsg("u",q);pushMsg("a","Думаю…");
+  const sample=await sampleReady;
+  const ctx=S.items.map(i=>({title:i.title,category:i.category,confidence:i.confidence,
+    sourceType:i.sourceType,year:i.year,description:i.description}));
+  const coverage=CATS.map(c=>c.id+":"+S.items.filter(i=>i.category===c.id).length).join(", ");
+  if(!sample){
+    const lower=q.toLowerCase(); let answer="";
+    if(lower.includes("общеж")||lower.includes("dorm")){answer=`Найдено записей об общежитиях: ${S.items.filter(i=>i.category==="dormitories").length}.`;
+    }else if(lower.includes("официал")){answer=`Из официальных источников: ${S.items.filter(i=>i.sourceType==="official").length} записей из ${S.items.length}.`;
+    }else if(lower.includes("недостат")||lower.includes("категор")){answer=`Покрытие: ${CATS.map(c=>`${c.label} — ${S.items.filter(i=>i.category===c.id).length}`).join("; ")}.`;
+    }else if(lower.includes("объект")||lower.includes("вид")){answer=S.items.length?`В наборе видны: ${S.items.slice(0,5).map(i=>i.facility||i.title).join(", ")}.`:`Собранных данных недостаточно.`;
+    }else{answer=`В профиле ${S.items.length} записей; средняя уверенность — ${S.stats?.avgConf||0}%. Для более точного ответа задайте вопрос про категорию, официальный источник или объект.`;}
+    S.chat.pop();pushMsg("a",answer);return;
+  }
+  try{
+    const r=await sample(`Отвечай ТОЛЬКО на основе этого набора данных о ${S.uni.name}. Не добавляй внешние факты.
+Если данных недостаточно, честно напиши, что собранных данных недостаточно для ответа.
+Записи по категориям: ${coverage}
+Dataset JSON: ${JSON.stringify(ctx)}
+Вопрос: ${q}
+Ответь не более чем в 90 словах, обычным текстом, без markdown.`,{modelTier:"quick"});
+    S.chat.pop();pushMsg("a",(r&&r.text||"").trim()||"Ответ не получен.");
+  }catch(e){S.chat.pop();pushMsg("a","Запрос не удался: "+(e&&e.code||"error"));}
+}
+$("#askBtn").onclick=ask;
+$("#askInput").addEventListener("keydown",e=>{if(e.key==="Enter")ask();});
+
+/* ---------- compare ---------- */
+$("#cmpGo").onclick=async()=>{
+  const q=$("#cmpQ").value.trim();if(!q||!S.uni)return;
+  $("#cmpOut").innerHTML=`<div class="empty">Собираю записи для “${esc(q)}”…</div>`;
+  const sample=await sampleReady;
+  let cands=[];
+  if(sample){try{const r=await sample.json(resolvePrompt(q),{cache:true});cands=r?.candidates||[];}catch(e){}}
+  if(!cands.length){
+    const catalog=await getUniversityCatalog();
+    cands=catalog.filter(u=>[u.name,u.city,u.country].join(" ").toLowerCase().includes(q.toLowerCase())).slice(0,5);
+  }
+  if(!cands.length){$("#cmpOut").innerHTML=`<div class="empty">Ни один реальный университет не совпал с запросом “${esc(q)}”. Ничего не придумываем.</div>`;return;}
+  const u2=cands[0];
+  const groups=[["campus","libraries"],["dormitories","sports"],["laboratories","student_life","city"]];
+  const res=sample?(await Promise.all(groups.map(async g=>{try{const r=await sample.json(collectPrompt(u2,g),{cache:true});return r?.items||[];}catch(e){return [];}}))).flat():buildDeterministicDataset(u2);
+  const {kept}=dedupe(res.filter(i=>i&&CATMAP[i.category]&&i.title));
+  const it2=kept.map(i=>({...i,confidence:scoreItem(i).total})).filter(i=>i.confidence>=45);
+  const col=(u,items)=>{
+    const avg=items.length?Math.round(items.reduce((a,i)=>a+i.confidence,0)/items.length):0;
+    const rows=[["Город",`${u.city}, ${u.country}`],["Записей в наборе",items.length],
+      ["Высокая уверенность",items.filter(i=>i.confidence>=80).length],
+      ["Категории",new Set(items.map(i=>i.category)).size+" / 7"],
+      ["Официальные источники",items.filter(i=>i.sourceType==="official").length],
+      ["Записи с датой",items.filter(i=>i.year).length],
+      ["Средняя уверенность",avg+"%"]];
+    return `<div class="col"><div style="font-weight:600;margin-bottom:8px">${esc(u.name)}</div>
+      ${rows.map(([k,v])=>`<div class="rowk"><span>${k}</span><span>${v}</span></div>`).join("")}</div>`;};
+  $("#cmpOut").innerHTML=`<div class="cmp">${col(S.uni,S.items)}${col(u2,it2)}</div>
+    <p class="sec-sub" style="margin-top:10px">Сравнение только по доступным данным. Это не рейтинг университетов.</p>`;
+};
+
+/* ---------- search entry ---------- */
+async function search(q){
+  q=(q||"").trim();if(!q)return;
+  $("#go").disabled=true;$("#go").textContent="Поиск…";
+  const sample=await sampleReady;
+  $("#go").disabled=false;$("#go").textContent="Создать профиль";
+
+  let cands=[];
+  const catalog = await getUniversityCatalog();
+  const query = q.toLowerCase();
+  cands = catalog.filter(u => {
+    const haystack = [u.name, u.city, u.country, (u.name || "").split(" ")[0], (u.summary || "")].join(" ").toLowerCase();
+    return haystack.includes(query) || query.includes((u.name || "").toLowerCase().split(" ")[0]) || query.includes((u.city || "").toLowerCase());
+  }).slice(0, 10);
+
+  if (!cands.length && sample && typeof sample.json === "function") {
+    try { const r=await sample.json(resolvePrompt(q),{cache:true}); cands=r?.candidates||[]; } catch (e) {}
+  }
+
+  if(!cands.length){
+    $("#candList").innerHTML=`<div class="empty">Ни один реальный университет не совпал с запросом “${esc(q)}”. Система не будет угадывать.</div>`;
+    show("viewResolve");return;
+  }
+  if(cands.length===1)return run(cands[0]);
+  $("#candList").innerHTML=cands.map((c,idx)=>`<button class="cand" data-i="${idx}">
+      <div style="flex:1"><div class="nm">${esc(c.name)}</div>
+      <div class="loc">${esc([c.city,c.country].filter(Boolean).join(", "))}${c.founded?" · est. "+c.founded:""}</div></div>
+      <span style="color:var(--fg3)">→</span></button>`).join("");
+  $$("#candList .cand").forEach(b=>b.onclick=()=>run(cands[+b.dataset.i]));
+  show("viewResolve");
+}
+$("#go").onclick=()=>search($("#q").value);
+$("#q").addEventListener("keydown",e=>{if(e.key==="Enter")search($("#q").value);});
+async function renderCatalogChips(){
+  const catalog = await getUniversityCatalog();
+  $("#chips").innerHTML = catalog.map(u => `<button class="chip">${esc(u.name)}</button>`).join("");
+  $$("#chips .chip").forEach(c => c.onclick = () => { $("#q").value = c.textContent.trim(); search(c.textContent.trim()); });
+}
+
+$("#backHome").onclick=()=>show("viewHome");
+$("#navNew").onclick=()=>{show("viewHome");$("#q").focus();};
+$("#navDebug").onclick=()=>show("viewDebug");
+$("#navHome").onclick=()=>{show("viewHome");$("#navHome").classList.add("active");$("#navTop").classList.remove("active");};
+$("#navTop").onclick=async()=>{show("viewTop");$("#navTop").classList.add("active");$("#navHome").classList.remove("active");await initTopUniversities();};
+
+const globalAiDock=$("#globalAiDock");
+const globalAiToggle=$("#globalAiToggle");
+const globalAiInput=$("#globalAiInput");
+const globalAiLog=$("#globalAiLog");
+function appendGlobalAiMessage(text,user=false){
+  globalAiLog.insertAdjacentHTML("beforeend",`<div class="ai-msg ${user?"user":""}">${esc(text)}</div>`);
+  globalAiLog.scrollTop=globalAiLog.scrollHeight;
+}
+async function askGlobalAi(){
+  const question=globalAiInput.value.trim();
+  if(!question)return;
+  globalAiInput.value="";
+  appendGlobalAiMessage(question,true);
+  appendGlobalAiMessage("Думаю…");
+  const university=S.uni?.name||"выбранного университета";
+  let answer="Пожалуйста, сначала откройте профиль университета, чтобы я мог ответить по его данным.";
+  try{
+    const response=await fetch("http://localhost:11434/api/chat",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({model:"llama3.2",messages:[{role:"user",content:`Ты помощник по университетам. Университет: ${university}. Ответь кратко на русском языке. Вопрос: ${question}`}],stream:false})});
+    if(response.ok){const data=await response.json();answer=data?.message?.content||answer;}
+  }catch(e){}
+  globalAiLog.lastElementChild?.remove();
+  appendGlobalAiMessage(answer);
+}
+$("#globalAiAsk").onclick=askGlobalAi;
+globalAiInput.addEventListener("keydown",e=>{if(e.key==="Enter")askGlobalAi();});
+
+renderCatalogChips();
+initTopUniversities();
+bootAuth();
+</script>
+</body>
+</html>

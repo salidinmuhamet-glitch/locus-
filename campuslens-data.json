@@ -1,0 +1,48 @@
+{
+  "universities": [
+    {
+      "name": "Назарбаев Университет",
+      "city": "Астана",
+      "country": "Казахстан",
+      "founded": 2010,
+      "summary": "Крупный университет в Казахстане с современным кампусом и сильным STEM-направлением.",
+      "items": [
+        {"category": "campus", "facility": "Main Campus", "title": "Назарбаев Университет Campus", "description": "Главный кампус с общественными пространствами, инфраструктурой и современной архитектурой.", "sourceType": "official", "pageTitle": "Назарбаев Университет — Campus", "year": 2024, "certainty": 0.92, "categoryFit": 0.94},
+        {"category": "libraries", "facility": "University Library", "title": "Назарбаев Университет Library", "description": "Библиотека и читальные комнаты для студентов и научной деятельности.", "sourceType": "official", "pageTitle": "Назарбаев Университет Library", "year": 2023, "certainty": 0.9, "categoryFit": 0.92},
+        {"category": "dormitories", "facility": "Student Housing", "title": "Назарбаев Университет Dormitory", "description": "Общежития и жилые зоны студентов на кампусе.", "sourceType": "government", "pageTitle": "Назарбаев Университет student housing", "year": 2022, "certainty": 0.82, "categoryFit": 0.83},
+        {"category": "sports", "facility": "Sports Complex", "title": "Назарбаев Университет Sports Center", "description": "Спортивный комплекс с зонами тренировок и учебной физической подготовки.", "sourceType": "student_org", "pageTitle": "Назарбаев Университет sports facilities", "year": 2024, "certainty": 0.78, "categoryFit": 0.8},
+        {"category": "laboratories", "facility": "Research Lab", "title": "Назарбаев Университет Laboratory", "description": "Лаборатории и учебные исследовательские пространства университета.", "sourceType": "official", "pageTitle": "Назарбаев Университет labs", "year": 2023, "certainty": 0.76, "categoryFit": 0.8},
+        {"category": "student_life", "facility": "Student Life", "title": "Назарбаев Университет Student Life", "description": "Студенческая жизнь, события и общественные активности кампуса.", "sourceType": "student_org", "pageTitle": "Назарбаев Университет student life", "year": 2024, "certainty": 0.73, "categoryFit": 0.77},
+        {"category": "city", "facility": "City Context", "title": "Назарбаев Университет City View", "description": "Городская локация и общественный контекст кампуса.", "sourceType": "wikimedia", "pageTitle": "Назарбаев Университет city view", "year": 2021, "certainty": 0.66, "categoryFit": 0.72}
+      ]
+    },
+    {
+      "name": "Astana IT University",
+      "city": "Астана",
+      "country": "Казахстан",
+      "founded": 2019,
+      "summary": "IT-университет в Астане с технологической образовательной средой в центре городской инфраструктуры.",
+      "items": [
+        {"category": "campus", "facility": "Main Campus", "title": "Astana IT University Campus", "description": "Главный кампус университета с учебными корпусами и публичной инфраструктурой.", "sourceType": "official", "pageTitle": "Astana IT University — Campus", "year": 2024, "certainty": 0.89, "categoryFit": 0.9},
+        {"category": "libraries", "facility": "Learning Center", "title": "Astana IT University Library", "description": "Читальные и учебные зоны для студентов и преподавателей.", "sourceType": "official", "pageTitle": "Astana IT University Library", "year": 2023, "certainty": 0.85, "categoryFit": 0.88},
+        {"category": "laboratories", "facility": "Innovation Lab", "title": "Astana IT University Labs", "description": "Научные лаборатории и цифровые рабочие пространства университета.", "sourceType": "official", "pageTitle": "Astana IT University labs", "year": 2024, "certainty": 0.8, "categoryFit": 0.83},
+        {"category": "sports", "facility": "Campus Gym", "title": "Astana IT University Sports", "description": "Спортивные зоны и активности студентов внутри кампуса.", "sourceType": "student_org", "pageTitle": "Astana IT University sports", "year": 2022, "certainty": 0.74, "categoryFit": 0.78},
+        {"category": "student_life", "facility": "Student Community", "title": "Astana IT University Student Life", "description": "Студенческая жизнь и технологические мероприятия в университете.", "sourceType": "student_org", "pageTitle": "Astana IT University student life", "year": 2024, "certainty": 0.72, "categoryFit": 0.76},
+        {"category": "city", "facility": "City View", "title": "Astana IT University City", "description": "Городской контекст и среда кампуса в Астане.", "sourceType": "wikimedia", "pageTitle": "Astana IT University city", "year": 2021, "certainty": 0.65, "categoryFit": 0.7}
+      ]
+    },
+    {
+      "name": "Harvard University",
+      "city": "Cambridge",
+      "country": "USA",
+      "founded": 1636,
+      "summary": "Historic university with a large academic ecosystem and iconic campus architecture.",
+      "items": [
+        {"category": "campus", "facility": "Harvard Yard", "title": "Harvard University Campus", "description": "Historic academic grounds and central campus environment.", "sourceType": "official", "pageTitle": "Harvard University Campus", "year": 2024, "certainty": 0.93, "categoryFit": 0.94},
+        {"category": "libraries", "facility": "Widener Library", "title": "Harvard Library", "description": "Major library and study environment within the university ecosystem.", "sourceType": "official", "pageTitle": "Harvard Library", "year": 2024, "certainty": 0.91, "categoryFit": 0.92},
+        {"category": "dormitories", "facility": "Residential Houses", "title": "Harvard Dormitories", "description": "Residential college housing and dormitory system.", "sourceType": "official", "pageTitle": "Harvard residential houses", "year": 2023, "certainty": 0.84, "categoryFit": 0.86},
+        {"category": "sports", "facility": "Athletics Complex", "title": "Harvard Sports", "description": "Athletic facilities and varsity sports environment.", "sourceType": "government", "pageTitle": "Harvard athletics", "year": 2023, "certainty": 0.8, "categoryFit": 0.82}
+      ]
+    }
+  ]
+}
